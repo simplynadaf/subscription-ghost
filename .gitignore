@@ -4,3 +4,8 @@ __pycache__/
 venv/
 *.log
 .DS_Store
+
+# recording intermediates (regenerate with recording/build_voiceover.sh)
+recording/voiceover/seg*.wav
+recording/voiceover/bed.wav
+recording/voiceover/voiceover.wav
