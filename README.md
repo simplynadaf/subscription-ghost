@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/cover.png" alt="Subscription Ghost: an open model finds the money quietly leaving your account" width="820" />
+<img src="docs/github-cover.png" alt="Subscription Ghost: the money quietly leaving your account. An open model finds your ghost subscriptions and names the exact cheaper plan, on your laptop, for free." width="840" />
 
 # 👻 Subscription Ghost finds the money quietly leaving your account
 
@@ -37,7 +37,40 @@
 
 ---
 
+## 📸 Screenshots
+
+<div align="center">
+
+**The verdict: how much is quietly leaving, and what 5 years of it costs**
+
+<img src="docs/screenshots/01-hero.png" alt="Hero: the annual ghost cost leaking out, the 5-year compounding figure, and the trust bar (no bank login, on your device, open source, nothing uploaded)" width="760" />
+
+**Your ghosts, worst first: each with a ghost type, the rupees it wastes, the exact cheaper plan, and a Stop this leak button**
+
+<img src="docs/screenshots/02-ghosts.png" alt="The ranked ghost list: Gym abandoned, iCloud over-tier, Netflix over-tier, each showing the better plan and the yearly plus 5-year waste" width="760" />
+
+**Tap a ghost: the plain verdict, the one action, and the honesty line (every number is from your data)**
+
+<img src="docs/screenshots/03-verdict.png" alt="A verdict card: you paid Rs 10,000 for the gym up front but stopped going, so about Rs 8,333 is gone, switch to a monthly plan" width="640" />
+
+**Stop the leak and reclaim: the overlap finding (paying for music twice), the running reclaimed total, and the honest scorecard**
+
+<img src="docs/screenshots/04-savings.png" alt="The savings view: paying for music twice (keep Amazon Prime, drop the rest), reclaim total, split bar, and the stat grid" width="760" />
+
+**Lazy by design: tap a service, the price fills in. No typing, no bank login.**
+
+<img src="docs/screenshots/05-add.png" alt="The add-a-subscription sheet: a catalog of service logo tiles and a how-often-do-you-use-it picker" width="640" />
+
+**Built for the phone too**
+
+<img src="docs/screenshots/06-mobile.png" alt="The mobile layout of the ranked ghost list" width="300" />
+
+</div>
+
+---
+
 **📖 Table of Contents**
+- [Screenshots](#-screenshots)
 - [The Problem (the charges designed to be invisible)](#-the-problem)
 - [The One Prediction](#-the-one-prediction)
 - [The Four Ghosts](#-the-four-ghosts)
@@ -348,6 +381,10 @@ No. It is a static replay of a real run, baked to GitHub Pages, making zero call
 - 👻 Challenge: https://dev.to/challenges/hacktoberfest-week4-2026-10-26
 - 🖥️ Live demo (static replay): https://simplynadaf.github.io/subscription-ghost/
 - ▶️ Demo video: coming soon
+
+<div align="center">
+<img src="docs/youtube-thumbnail.png" alt="Subscription Ghost: find the money leaking out, Rs 29,056 a year, an open model found it, runs on your laptop for free" width="640" />
+</div>
 
 ---
 
