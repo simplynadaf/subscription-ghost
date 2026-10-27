@@ -28,6 +28,12 @@ It names four kinds of ghost:
 
 On a sample person's nine subscriptions it found **Rs 29,056 a year** quietly leaking, and for every one of them it named the exact cheaper plan.
 
+The biggest single ghost on that list was not the one you would guess. It was **iCloud+ at Rs 8,988 a year** on the 2 TB tier, for someone whose photos fit in 40 GB. The 50 GB tier at Rs 900 a year covers them with room to spare. That is Rs 8,088 going out the door every year for storage nobody fills. The gym was second at Rs 8,333. My Prime, the one that started all this, was way down the list at Rs 1,100. The small charges hide the big ones, which is exactly why a ranked prediction beats scrolling your own statement.
+
+Then there is the ghost you cannot see by looking at any single line: **paying for the same thing twice.** This person pays for Amazon Prime, YouTube Premium, and Spotify. All three play music. Each one on its own looks fine, so no per-line check ever flags it. Subscription Ghost looks across the whole list, sees three music subscriptions where one would do, and says keep the one bundled into something you already pay for and drop the other two. That overlap alone is **Rs 5,376 a year.** I made that call deliberately conservative: it only flags an overlap when a capability is genuinely duplicated, so it will not tell you to cancel the music you actually sit and listen to.
+
+That last point matters. A dumb version of this would scream "cancel everything." This one leaves three subscriptions marked **worth it** and says so, because the goal is to find the waste, not to nag you out of the things you use. A tool you cannot trust to leave the good stuff alone is a tool you close.
+
 ---
 
 ## Demo
@@ -35,6 +41,8 @@ On a sample person's nine subscriptions it found **Rs 29,056 a year** quietly le
 Try it now, no setup, nothing uploaded: **https://simplynadaf.github.io/subscription-ghost/**
 
 Open it on your phone too. It opens on a real sample person's subscriptions so you see the value with zero effort, then you can tap services from a catalog to add your own (the price fills in automatically). Tap any ghost to see the verdict and the fix, then hit "Stop this leak" and watch the total drop.
+
+Try this in ten seconds: tap the gym row. It tells you that paying a year up front and stopping in February is Rs 8,333 gone, and that a monthly plan would have let you stop paying the month you stopped going. Then tap "Stop this leak" on it and watch Rs 8,333 jump out of the leaking total into the reclaimed counter. That is the whole loop: see the leak, understand it in one line, close it.
 
 ![Subscription Ghost ranking subscriptions worst first, each with a ghost badge, the rupees it wastes, and the exact cheaper plan](https://raw.githubusercontent.com/simplynadaf/subscription-ghost/main/docs/ui-hero.png)
 
@@ -63,6 +71,8 @@ Two open models, one job each, both on CPU.
 ![How it works: your subscriptions go into TabPFN which predicts the waste and ranks them, then Gemma writes the verdict and the exact cheaper plan, with a deterministic fallback](https://raw.githubusercontent.com/simplynadaf/subscription-ghost/main/docs/architecture.png)
 
 **TabPFN-v2 decides.** Prior Labs' open-weight tabular foundation model reads a small table of subscriptions (what you pay, how often you use it, how long you have had it, whether the price crept, whether you prepaid a year) and predicts the rupees each one wastes per year, in a single forward pass, no training loop of my own. It then ranks them worst first. This is exactly what TabPFN is built for: small tables, instant predictions. I use the open v2 weights so the whole stack is genuinely open, and it runs on CPU in a couple of seconds.
+
+I went with a ranked prediction on purpose, not a rulebook of "if you use it fewer than N times, cancel." Thresholds break the moment real life does not match them: someone who opens an app twice a month might be getting full value, and someone who opens it daily out of habit might be wasting money on a tier they outgrew. The model learns the shape of waste from the whole table instead of from one brittle cutoff, and the number that matters for a triage tool is the order, which is why I score the ranking, not just the raw rupees.
 
 **Gemma 3 writes.** A local Gemma 3 model, served through Ollama, turns the decision into two plain lines: the verdict and the one action. It is handed the real numbers and is forbidden from inventing any price or figure that is not supplied. Every rupee it writes is checked against the numbers I gave it, and a line that smuggles in a figure I never provided is stripped.
 
