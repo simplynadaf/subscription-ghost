@@ -87,8 +87,55 @@
   .sheet-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,94vw);max-height:88dvh;overflow:auto}
   @media (max-width:640px){.sheet-panel{left:0;top:auto;bottom:0;transform:none;width:100vw;max-height:92dvh;border-radius:22px 22px 0 0}}
 
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.aura,.wisp{display:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.aura,.wisp,.shimmer,.coin{display:none}}
+
+  /* ---- premium layer ---- */
+  /* money shimmer on the big verdict number */
+  .shimmer{background:linear-gradient(100deg,var(--waste) 30%,#ffb199 48%,var(--waste) 66%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shim 3.2s linear infinite}
+  @keyframes shim{0%{background-position:160% 0}100%{background-position:-60% 0}}
+  .save-shimmer{background:linear-gradient(100deg,var(--save) 32%,#9affd0 50%,var(--save) 68%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shim 3.4s linear infinite}
+
+  /* verdict card: inner glow + top hairline sheen */
+  .verdict-glow{position:relative;overflow:hidden}
+  .verdict-glow::before{content:"";position:absolute;top:-40%;right:-10%;width:60%;height:120%;background:radial-gradient(circle,rgba(255,93,93,.14),transparent 65%);pointer-events:none}
+  .verdict-glow::after{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)}
+
+  /* ghost row: colored left edge by type + lift + glow on hover */
+  .grow{position:relative;overflow:hidden}
+  .grow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px;background:var(--edge,var(--soft));box-shadow:0 0 16px -2px var(--edge,transparent);opacity:.9}
+  .grow:hover{transform:translateY(-2px)}
+  .edge-abandoned,.edge-dead{--edge:var(--waste)}
+  .edge-over-tier{--edge:var(--ghost)}
+  .edge-crept{--edge:var(--warn)}
+  .edge-worth-it{--edge:var(--save)}
+
+  /* the #1 worst ghost gets a spotlight treatment */
+  .hero-ghost{background:linear-gradient(135deg,rgba(255,93,93,.1),rgba(124,108,255,.08))}
+  .hero-ghost .grow::before{width:4px}
+
+  /* brand logo chip (colored, not flat emoji) */
+  .logo{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 6px 16px -8px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08)}
+
+  /* ring progress for the usage/waste proportion on the hero ghost */
+  .mini-ring{transform:rotate(-90deg)}
+
+  /* magnetic cta base */
+  .mag{will-change:transform}
+
+  /* a faint ticking coin that rises near the verdict (money leaving) */
+  .coin{position:absolute;font-size:14px;opacity:0;pointer-events:none}
+
+  /* count pulse when a number lands */
+  @keyframes landPulse{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+  .landed{animation:landPulse .5s var(--ease)}
+
+  /* sheet entrance */
+  .sheet-panel{animation:none}
+  .sheet.show .sheet-panel{animation:sheetIn .5s var(--ease)}
+  @keyframes sheetIn{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
+  @media (max-width:640px){.sheet.show .sheet-panel{animation:sheetUp .45s var(--ease)}@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}}
 </style>
+
 </head>
 <body>
 
@@ -119,13 +166,13 @@
 
     <!-- the big verdict number -->
     <div class="glass reveal mt-10" id="verdictCard">
-      <div class="glass-in p-7 sm:p-10">
+      <div class="glass-in verdict-glow p-7 sm:p-10">
         <div class="chip">found quietly leaving you</div>
-        <div class="money mt-2 font-semibold text-[var(--waste)] text-5xl sm:text-7xl tracking-tight" id="bigWaste">₹0</div>
+        <div class="money shimmer mt-2 font-semibold text-5xl sm:text-7xl tracking-tight" id="bigWaste">₹0</div>
         <div class="text-[var(--muted)] mt-1">per year, across <span id="subCount">0</span> subscriptions</div>
         <div class="mt-7 flex flex-wrap items-center gap-3">
-          <button class="btn px-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="seeBtn">See the ghosts</button>
-          <button class="btn px-6 py-3.5 font-semibold border border-[var(--rule)] text-[var(--ink)]" id="addBtn">Add your own</button>
+          <button class="btn mag px-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="seeBtn">See the ghosts</button>
+          <button class="btn mag px-6 py-3.5 font-semibold border border-[var(--rule)] text-[var(--ink)]" id="addBtn">Add your own</button>
         </div>
         <div class="chip mt-4">👆 showing a sample person's subscriptions · add yours anytime, nothing is uploaded</div>
       </div>
@@ -152,7 +199,7 @@
       <div class="glass-in p-7 sm:p-10 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <div class="chip">if you act on every ghost</div>
-          <div class="money mt-2 font-semibold text-[var(--save)] text-4xl sm:text-6xl" id="saveNum">₹0</div>
+          <div class="money save-shimmer mt-2 font-semibold text-4xl sm:text-6xl" id="saveNum">₹0</div>
           <div class="text-[var(--muted)] mt-1">back in your pocket every year</div>
           <div class="mt-6 h-3 rounded-full overflow-hidden flex bg-[var(--bg-2)]" id="splitBar"></div>
           <div class="flex gap-5 mt-3 chip">
@@ -214,6 +261,17 @@
 const F = n => '₹' + Math.round(n).toLocaleString('en-IN');
 let DATA=null, CATALOG=null, pick={service:null, uses:4};
 
+// brand-ish background tints for the logo chips (premium, not flat)
+const BRAND = {
+  "Amazon Prime":"#00a8e1","Netflix":"#e50914","JioHotstar":"#1f80e0","Spotify":"#1db954",
+  "YouTube Premium":"#ff0033","Swiggy One":"#fc8019","Zomato Gold":"#e23744","Gym / Fitness":"#f5a623",
+  "cult.fit":"#ff3278","iCloud+":"#3a93f6","Google One":"#4285f4","ChatGPT Plus":"#10a37f","LinkedIn Premium":"#0a66c2"
+};
+function logoChip(x){
+  const c=BRAND[x.name]||'#7c6cff';
+  return `<span class="logo" style="background:linear-gradient(135deg,${c}33,${c}14);color:${c}">${serviceEmoji(x)}</span>`;
+}
+
 async function load(){
   try{ const h=await fetch('/api/health'); if(h.ok){
     const cat=await (await fetch('/api/catalog')).json();
@@ -226,7 +284,21 @@ async function load(){
   return null;
 }
 
-const countUp=(el,to,fmt)=>gsap.to({v:0},{v:to,duration:1.6,ease:'power3.out',onUpdate:function(){el.textContent=fmt(this.targets()[0].v)}});
+const countUp=(el,to,fmt)=>gsap.to({v:0},{v:to,duration:1.6,ease:'power3.out',
+  onUpdate:function(){el.textContent=fmt(this.targets()[0].v)},
+  onComplete:()=>{el.classList.add('landed');setTimeout(()=>el.classList.remove('landed'),600)}});
+
+// magnetic buttons: lean toward the pointer, spring back
+function magnetize(){
+  document.querySelectorAll('.mag').forEach(el=>{
+    el.addEventListener('pointermove',e=>{
+      const r=el.getBoundingClientRect();
+      const x=e.clientX-r.left-r.width/2, y=e.clientY-r.top-r.height/2;
+      gsap.to(el,{x:x*0.3,y:y*0.4,duration:.3,ease:'power2.out'});
+    });
+    el.addEventListener('pointerleave',()=>gsap.to(el,{x:0,y:0,duration:.6,ease:'elastic.out(1,0.4)'}));
+  });
+}
 
 function badgeClass(t){return 'b-'+t}
 
@@ -241,16 +313,16 @@ function render(){
   document.getElementById('subCount').textContent=g.length;
   document.getElementById('engineTag').textContent='engine: '+(DATA.engine||'tabpfn');
 
-  // ghost list
+  // ghost list (first item = spotlighted hero ghost)
   document.getElementById('ghostList').innerHTML=g.map((x,i)=>`
-    <div class="glass reveal gl"><button class="row w-full text-left glass-in p-4 sm:p-5 flex items-center gap-4 rounded-[21px]" data-i="${i}">
-      <span class="text-2xl w-9 text-center">${serviceEmoji(x)}</span>
+    <div class="glass reveal gl ${i===0?'hero-ghost':''}"><button class="row grow edge-${x.ghost_type} w-full text-left glass-in p-4 sm:p-5 flex items-center gap-4 rounded-[21px]" data-i="${i}">
+      ${logoChip(x)}
       <span class="flex-1 min-w-0">
-        <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
+        <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold ${i===0?'text-lg':''} truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
         <span class="chip block mt-1">${x.tier} · used ~${x.uses_per_month}x/mo · ${F(x.annual_cost)}/yr</span>
       </span>
       <span class="text-right shrink-0">
-        <span class="money block text-xl sm:text-2xl font-semibold" style="color:${x.ghost_type==='worth-it'?'var(--save)':'var(--waste)'}">${x.ghost_type==='worth-it'?F(0):F(x.predicted_waste)}</span>
+        <span class="money block ${i===0?'text-2xl sm:text-3xl':'text-xl sm:text-2xl'} font-semibold" style="color:${x.ghost_type==='worth-it'?'var(--save)':'var(--waste)'}">${x.ghost_type==='worth-it'?F(0):F(x.predicted_waste)}</span>
         <span class="chip block">${x.ghost_type==='worth-it'?'worth it':'wasted/yr'}</span>
       </span>
     </button></div>`).join('');
@@ -386,6 +458,7 @@ function animate(waste){
   });
   const save=DATA.total_waste_year||waste;
   ScrollTrigger.create({trigger:'#saveNum',start:'top 85%',once:true,onEnter:()=>countUp(document.getElementById('saveNum'),save,F)});
+  magnetize();
 }
 
 document.getElementById('seeBtn').addEventListener('click',()=>document.getElementById('ghostsSection').scrollIntoView({behavior:'smooth'}));
