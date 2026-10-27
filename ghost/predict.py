@@ -152,10 +152,12 @@ def evaluate(rows, holdout=0.25, seed=11):
 def rank(rows, train_rows=None):
     """Rank the given subscriptions by predicted waste.
 
-    Fits TabPFN on labeled training data (the synthetic log), then predicts waste for
-    `rows`. If `rows` already carry labels (the training CSV itself), it still works:
-    we fit on train_rows (defaults to the labeled CSV) and predict on `rows`.
+    TabPFN predicts a waste score and sets the ranking order (the learned signal).
+    The smart analyzer (dominant_ghost) then attaches the SPECIFIC ghost type and the
+    exact best-fit alternative plan and saving, so the verdict is both ranked by the
+    model and precise about the action. No double counting: one dominant reason each.
     """
+    from ghost.analyze import dominant_ghost
     if train_rows is None:
         train_rows = load_rows()
     tx, ty = to_xy(train_rows)
@@ -165,11 +167,20 @@ def rank(rows, train_rows=None):
     out = []
     for row, p in zip(rows, pred):
         item = dict(row)
-        item["predicted_waste"] = round(float(p))
-        item["ghost_type"] = ghost_type(row)
-        item["ghost_label"] = GHOST_LABELS[item["ghost_type"]]
+        verdict = dominant_ghost(row)
+        # the model gives the ranking signal; the analyzer gives the precise saving.
+        # use the analyzer's saving as the headline number (it is exact arithmetic),
+        # and keep the model score as the tie-breaker / confidence.
+        item["model_score"] = round(float(p))
+        item["predicted_waste"] = verdict["wasted"]
+        item["ghost_type"] = verdict["type"]
+        item["ghost_label"] = verdict["label"]
+        item["current_annual"] = verdict["current_annual"]
+        item["better_plan"] = verdict["better_plan"]
+        item["better_annual"] = verdict["better_annual"]
+        item["save"] = verdict["save"]
         out.append(item)
-    out.sort(key=lambda r: r["predicted_waste"], reverse=True)
+    out.sort(key=lambda r: (r["predicted_waste"], r["model_score"]), reverse=True)
     return out, model.engine
 
 

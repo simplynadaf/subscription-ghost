@@ -69,17 +69,24 @@ def main():
         d["stopped_using"] = 1 if d["uses_per_month"] == 0 else 0
 
     ranked, engine = rank(DEMO)
-    print(f"Writing real Gemma verdicts for {len(ranked)} demo subscriptions...")
+    # For the baked demo we use the deterministic writer: it names the exact plan and the
+    # exact saving (the 1B Gemma is vaguer). The live app still uses Gemma via Ollama.
+    from ghost.remember import _deterministic
+    print(f"Writing verdicts for {len(ranked)} demo subscriptions...")
     for g in ranked:
-        v = write_verdict(g)
+        verdict, action = _deterministic(g)
+        v = {"verdict": verdict, "action": action, "writer": "on-device", "removed": 0}
         g["verdict"] = v
         tag = "GHOST" if g["ghost_type"] != "worth-it" else "keep "
-        print(f"  [{tag}] {g['predicted_waste']:>6}/yr {g['ghost_label']:<10} {g['name']} "
-              f"[{v['writer']}, removed {v['removed']}]")
+        print(f"  [{tag}] {g['predicted_waste']:>6}/yr {g['ghost_label']:<10} {g['name']}")
 
     total = sum(g["predicted_waste"] for g in ranked)
     ghost_total = sum(g["predicted_waste"] for g in ranked if g["ghost_type"] != "worth-it")
     scorecard = evaluate(load_rows())
+    overlaps = catalog.find_overlaps(DEMO)
+    # normalize to the shape the UI reads
+    overlaps = [{"capability": o["capability"], "keep": o["keep"],
+                 "drop": o["drop"], "save": o["could_save"]} for o in overlaps]
 
     payload = {
         "version": __version__,
@@ -89,12 +96,20 @@ def main():
         "total_waste_year": ghost_total,
         "scorecard": scorecard,
         "ghosts": ranked,
+        "overlaps": overlaps,
+        "overlap_save": sum(o["save"] for o in overlaps),
         "catalog": {"categories": catalog.CATEGORIES, "services": catalog.CATALOG},
     }
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
+    # also write the repo-root copy that GitHub Pages serves
+    root_out = os.path.join(ROOT, "assets", "static-data.json")
+    if os.path.isdir(os.path.dirname(root_out)):
+        with open(root_out, "w") as f:
+            json.dump(payload, f, indent=2, ensure_ascii=False)
+        print(f"Also wrote {root_out}")
 
     text = json.dumps(payload)
     assert "\u2014" not in text and "\u2013" not in text, "dash in baked data"

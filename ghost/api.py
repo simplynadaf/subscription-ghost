@@ -77,8 +77,11 @@ def analyze(req: AnalyzeRequest):
         d["stopped_using"] = 1 if d["uses_per_month"] == 0 else 0
         rows.append(d)
     ranked, engine = rank(rows)
-    total = sum(r["predicted_waste"] for r in ranked)
-    return {"engine": engine, "total_waste": total, "ghosts": ranked}
+    overlaps = catalog.find_overlaps(rows)
+    total = sum(r["predicted_waste"] for r in ranked if r["ghost_type"] != "worth-it")
+    overlap_save = sum(o["could_save"] for o in overlaps)
+    return {"engine": engine, "total_waste": total, "ghosts": ranked,
+            "overlaps": overlaps, "overlap_save": overlap_save}
 
 
 @app.post("/api/verdict")

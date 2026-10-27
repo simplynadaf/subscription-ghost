@@ -36,7 +36,8 @@ def _normalize(text):
 def _allowed_numbers(ghost):
     """The only rupee figures Gemma is allowed to use."""
     nums = set()
-    for key in ("predicted_waste", "annual_cost", "monthly_cost"):
+    for key in ("predicted_waste", "annual_cost", "monthly_cost",
+                "current_annual", "better_annual", "save"):
         v = ghost.get(key)
         if v is not None:
             nums.add(round(float(v)))
@@ -75,21 +76,35 @@ def _deterministic(ghost):
     waste = ghost["predicted_waste"]
     gtype = ghost["ghost_type"]
     uses = ghost["uses_per_month"]
+    current = ghost.get("current_annual") or ghost.get("annual_cost")
+    plan = ghost.get("better_plan")
+    plan_cost = ghost.get("better_annual")
+    save = ghost.get("save", waste)
+
+    def rupees(n):
+        return "Rs " + format(int(round(n)), ",d")
+
     if gtype == "abandoned":
-        verdict = f"You paid for {name} up front but stopped using it, so about {waste} rupees a year is gone."
-        action = f"Switch to a monthly plan so you stop paying the month you stop going."
-    elif gtype == "over-tier":
-        verdict = f"You use {name} about {uses} times a month, far less than this plan assumes, wasting about {waste} rupees a year."
-        action = f"Move to the cheapest tier that covers what you actually use."
+        verdict = (f"You paid {rupees(current)} for {name} up front but stopped going, "
+                   f"so about {rupees(waste)} of it is gone.")
+        action = (f"Switch to {plan}: you stop paying the month you stop going." if plan
+                  else "Switch to a monthly plan so you stop paying when you stop going.")
+    elif gtype == "over-tier" and plan and plan_cost is not None:
+        verdict = (f"You use {name} about {uses} times a month, far less than this "
+                   f"{rupees(current)} plan assumes.")
+        action = (f"Move to {plan} at {rupees(plan_cost)} a year and keep what you "
+                  f"actually use. You save {rupees(save)} a year.")
     elif gtype == "dead":
-        verdict = f"You are paying for {name} and barely opening it, wasting about {waste} rupees a year."
+        verdict = (f"You pay {rupees(current)} for {name} and barely open it, wasting "
+                   f"about {rupees(waste)} a year.")
         action = f"Cancel {name} unless you will genuinely use it next month."
     elif gtype == "crept":
-        verdict = f"The price of {name} quietly rose, and you are now wasting about {waste} rupees a year."
-        action = f"Check if the current price is still worth it, or downgrade."
+        verdict = (f"The price of {name} quietly rose, and you now waste about "
+                   f"{rupees(waste)} a year on it.")
+        action = "Re-check if it is worth the new price, or drop to a smaller plan."
     else:
-        verdict = f"{name} looks worth keeping for now."
-        action = f"Keep it, but check again if your usage drops."
+        verdict = f"{name} looks worth keeping for how much you use it."
+        action = "Keep it, but check again if your usage drops."
     return verdict, action
 
 

@@ -3,7 +3,7 @@
   "engine": "tabpfn",
   "currency": "INR",
   "total_spend_year": 58395,
-  "total_waste_year": 42231,
+  "total_waste_year": 29056,
   "scorecard": {
     "engine": "tabpfn",
     "holdout_count": 100,
@@ -15,29 +15,6 @@
     "rupees_captured_pct": 96
   },
   "ghosts": [
-    {
-      "name": "ChatGPT Plus",
-      "tier": "Plus",
-      "monthly_cost": 1900,
-      "annual_cost": 22800,
-      "uses_per_month": 2,
-      "months_active": 6,
-      "price_creep_pct": 35,
-      "is_annual_prepaid": 0,
-      "trial_converted": 1,
-      "n_tiers": 1,
-      "category": "productivity",
-      "stopped_using": 0,
-      "predicted_waste": 15232,
-      "ghost_type": "crept",
-      "ghost_label": "Price crept",
-      "verdict": {
-        "verdict": "The price of ChatGPT Plus quietly rose, and you are now wasting about 15232 rupees a year.",
-        "action": "Check if the current price is still worth it, or downgrade.",
-        "writer": "gemma+fallback",
-        "removed": 0
-      }
-    },
     {
       "name": "Gym / Fitness",
       "tier": "Annual (New Year pack)",
@@ -51,13 +28,18 @@
       "n_tiers": 3,
       "category": "fitness",
       "stopped_using": 0,
-      "predicted_waste": 8764,
+      "model_score": 8764,
+      "predicted_waste": 8333,
       "ghost_type": "abandoned",
       "ghost_label": "Abandoned",
+      "current_annual": 10000.0,
+      "better_plan": "a monthly plan (stop paying when you stop going)",
+      "better_annual": null,
+      "save": 8333,
       "verdict": {
-        "verdict": "Cancel the gym membership.",
-        "action": "Stop using the gym monthly.",
-        "writer": "gemma",
+        "verdict": "You paid Rs 10,000 for Gym / Fitness up front but stopped going, so about Rs 8,333 of it is gone.",
+        "action": "Switch to a monthly plan (stop paying when you stop going): you stop paying the month you stop going.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -74,13 +56,18 @@
       "n_tiers": 3,
       "category": "cloud",
       "stopped_using": 0,
-      "predicted_waste": 8641,
+      "model_score": 8641,
+      "predicted_waste": 8088,
       "ghost_type": "over-tier",
       "ghost_label": "Over-tier",
+      "current_annual": 8988.0,
+      "better_plan": "50 GB",
+      "better_annual": 900,
+      "save": 8088,
       "verdict": {
-        "verdict": "Cancel the iCloud+ subscription.",
-        "action": "Stop using the service every month.",
-        "writer": "gemma",
+        "verdict": "You use iCloud+ about 3 times a month, far less than this Rs 8,988 plan assumes.",
+        "action": "Move to 50 GB at Rs 900 a year and keep what you actually use. You save Rs 8,088 a year.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -97,13 +84,46 @@
       "n_tiers": 4,
       "category": "streaming",
       "stopped_using": 0,
-      "predicted_waste": 7736,
+      "model_score": 7736,
+      "predicted_waste": 6000,
       "ghost_type": "over-tier",
       "ghost_label": "Over-tier",
+      "current_annual": 7788.0,
+      "better_plan": "Mobile",
+      "better_annual": 1788,
+      "save": 6000,
       "verdict": {
-        "verdict": "Cancel the Netflix Premium subscription.",
-        "action": "Stop using the service.",
-        "writer": "gemma",
+        "verdict": "You use Netflix about 1 times a month, far less than this Rs 7,788 plan assumes.",
+        "action": "Move to Mobile at Rs 1,788 a year and keep what you actually use. You save Rs 6,000 a year.",
+        "writer": "on-device",
+        "removed": 0
+      }
+    },
+    {
+      "name": "ChatGPT Plus",
+      "tier": "Plus",
+      "monthly_cost": 1900,
+      "annual_cost": 22800,
+      "uses_per_month": 2,
+      "months_active": 6,
+      "price_creep_pct": 35,
+      "is_annual_prepaid": 0,
+      "trial_converted": 1,
+      "n_tiers": 1,
+      "category": "productivity",
+      "stopped_using": 0,
+      "model_score": 15232,
+      "predicted_waste": 4788,
+      "ghost_type": "crept",
+      "ghost_label": "Price crept",
+      "current_annual": 22800.0,
+      "better_plan": "re-check if it is worth the new price",
+      "better_annual": null,
+      "save": 4788,
+      "verdict": {
+        "verdict": "The price of ChatGPT Plus quietly rose, and you now waste about Rs 4,788 a year on it.",
+        "action": "Re-check if it is worth the new price, or drop to a smaller plan.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -120,13 +140,18 @@
       "n_tiers": 4,
       "category": "shopping",
       "stopped_using": 0,
-      "predicted_waste": 1342,
+      "model_score": 1342,
+      "predicted_waste": 1100,
       "ghost_type": "over-tier",
       "ghost_label": "Over-tier",
+      "current_annual": 1499.0,
+      "better_plan": "Prime Shopping Edition",
+      "better_annual": 399,
+      "save": 1100,
       "verdict": {
-        "verdict": "Cancel the Amazon Prime subscription.",
-        "action": "Stop using it every month.",
-        "writer": "gemma",
+        "verdict": "You use Amazon Prime about 2 times a month, far less than this Rs 1,499 plan assumes.",
+        "action": "Move to Prime Shopping Edition at Rs 399 a year and keep what you actually use. You save Rs 1,100 a year.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -143,13 +168,18 @@
       "n_tiers": 1,
       "category": "food",
       "stopped_using": 0,
-      "predicted_waste": 516,
+      "model_score": 516,
+      "predicted_waste": 747,
       "ghost_type": "abandoned",
       "ghost_label": "Abandoned",
+      "current_annual": 996.0,
+      "better_plan": "a monthly plan (stop paying when you stop going)",
+      "better_annual": null,
+      "save": 747,
       "verdict": {
-        "verdict": "Cancel the Swiggy One subscription.",
-        "action": "Stop using the service.",
-        "writer": "gemma",
+        "verdict": "You paid Rs 996 for Swiggy One up front but stopped going, so about Rs 747 of it is gone.",
+        "action": "Switch to a monthly plan (stop paying when you stop going): you stop paying the month you stop going.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -166,13 +196,18 @@
       "n_tiers": 3,
       "category": "music",
       "stopped_using": 0,
-      "predicted_waste": 61,
+      "model_score": 61,
+      "predicted_waste": 0,
       "ghost_type": "worth-it",
       "ghost_label": "Worth it",
+      "current_annual": 3588.0,
+      "better_plan": null,
+      "better_annual": null,
+      "save": 0,
       "verdict": {
-        "verdict": "Cancel your Spotify Platinum subscription.",
-        "action": "Stop using Spotify monthly.",
-        "writer": "gemma",
+        "verdict": "Spotify looks worth keeping for how much you use it.",
+        "action": "Keep it, but check again if your usage drops.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -189,13 +224,18 @@
       "n_tiers": 1,
       "category": "streaming",
       "stopped_using": 0,
-      "predicted_waste": 22,
+      "model_score": 22,
+      "predicted_waste": 0,
       "ghost_type": "worth-it",
       "ghost_label": "Worth it",
+      "current_annual": 1788.0,
+      "better_plan": null,
+      "better_annual": null,
+      "save": 0,
       "verdict": {
-        "verdict": "Cancel the YouTube Premium subscription.",
-        "action": "Stop using YouTube Premium.",
-        "writer": "gemma",
+        "verdict": "YouTube Premium looks worth keeping for how much you use it.",
+        "action": "Keep it, but check again if your usage drops.",
+        "writer": "on-device",
         "removed": 0
       }
     },
@@ -212,17 +252,34 @@
       "n_tiers": 3,
       "category": "streaming",
       "stopped_using": 0,
-      "predicted_waste": 21,
+      "model_score": 21,
+      "predicted_waste": 0,
       "ghost_type": "worth-it",
       "ghost_label": "Worth it",
+      "current_annual": 948.0,
+      "better_plan": null,
+      "better_annual": null,
+      "save": 0,
       "verdict": {
-        "verdict": "Cancel the JioHotstar subscription.",
-        "action": "Stop using it every month.",
-        "writer": "gemma",
+        "verdict": "JioHotstar looks worth keeping for how much you use it.",
+        "action": "Keep it, but check again if your usage drops.",
+        "writer": "on-device",
         "removed": 0
       }
     }
   ],
+  "overlaps": [
+    {
+      "capability": "music",
+      "keep": "Amazon Prime",
+      "drop": [
+        "YouTube Premium",
+        "Spotify"
+      ],
+      "save": 5376
+    }
+  ],
+  "overlap_save": 5376,
   "catalog": {
     "categories": {
       "streaming": {

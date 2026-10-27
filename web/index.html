@@ -191,6 +191,12 @@
     <p class="reveal gs mt-4 text-[var(--muted)] max-w-[60ch]">Every subscription, ranked by how much it quietly wastes. Tap one and a local Gemma writes the verdict and the single action, using only your real numbers.</p>
 
     <div class="mt-8 flex flex-col gap-3" id="ghostList"></div>
+
+    <!-- cross-subscription overlap findings -->
+    <div class="mt-6" id="overlapWrap" style="display:none">
+      <div class="chip mb-3">paying twice for the same thing</div>
+      <div class="flex flex-col gap-3" id="overlapList"></div>
+    </div>
   </section>
 
   <!-- SAVINGS SPLIT -->
@@ -302,6 +308,41 @@ function magnetize(){
 
 function badgeClass(t){return 'b-'+t}
 
+// what each service provides, for cross-subscription overlap (mirror of catalog.PROVIDES)
+const PROVIDES={
+  "Amazon Prime":["video","music"],"Netflix":["video"],"JioHotstar":["video","sports"],
+  "Spotify":["music"],"YouTube Premium":["video","music"],"Swiggy One":["food-delivery"],
+  "Zomato Gold":["food-delivery"],"Gym / Fitness":["fitness"],"cult.fit":["fitness"],
+  "iCloud+":["cloud-storage"],"Google One":["cloud-storage"],"ChatGPT Plus":["ai"],"LinkedIn Premium":["jobs"]
+};
+function findOverlaps(subs){
+  const cap={}; const DUP=["music","food-delivery","cloud-storage","fitness"];
+  subs.forEach(s=>{ if((s.uses_per_month||0)<=0) return;
+    (PROVIDES[s.name]||[]).forEach(c=>{ (cap[c]=cap[c]||[]).push({name:s.name,annual:s.annual_cost||0}); });
+  });
+  const out=[];
+  Object.keys(cap).forEach(c=>{ const items=cap[c]; if(items.length<2||DUP.indexOf(c)<0) return;
+    items.sort((a,b)=>a.annual-b.annual);
+    out.push({capability:c, keep:items[0].name, drop:items.slice(1).map(x=>x.name), save:items.slice(1).reduce((a,b)=>a+b.annual,0)});
+  });
+  return out.sort((a,b)=>b.save-a.save);
+}
+function renderOverlaps(){
+  const ov=DATA.overlaps || findOverlaps(DATA.ghosts||[]);
+  const wrap=document.getElementById('overlapWrap');
+  if(!ov||!ov.length){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  document.getElementById('overlapList').innerHTML=ov.map(o=>`
+    <div class="glass reveal"><div class="glass-in p-4 sm:p-5 flex items-center gap-4 rounded-[21px]">
+      <span class="logo" style="background:rgba(245,166,35,.14);color:var(--warn)">⚠️</span>
+      <span class="flex-1 min-w-0">
+        <span class="font-semibold">You pay for ${o.capability.replace('-',' ')} twice</span>
+        <span class="chip block mt-1">${o.drop.join(', ')} overlaps with ${o.keep} · keep ${o.keep}</span>
+      </span>
+      <span class="text-right shrink-0"><span class="money block text-xl font-semibold text-[var(--save)]">${F(o.save)}</span><span class="chip block">save/yr</span></span>
+    </div></div>`).join('');
+}
+
 function render(){
   const g=DATA.ghosts||[];
   CATALOG=DATA.catalog;
@@ -320,6 +361,7 @@ function render(){
       <span class="flex-1 min-w-0">
         <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold ${i===0?'text-lg':''} truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
         <span class="chip block mt-1">${x.tier} · used ~${x.uses_per_month}x/mo · ${F(x.annual_cost)}/yr</span>
+        ${x.ghost_type!=='worth-it'&&x.better_plan?`<span class="chip block mt-1" style="color:var(--save)">→ ${x.better_annual>0?'move to '+x.better_plan+' at '+F(x.better_annual):x.better_plan} · save ${F(x.save||x.predicted_waste)}</span>`:''}
       </span>
       <span class="text-right shrink-0">
         <span class="money block ${i===0?'text-2xl sm:text-3xl':'text-xl sm:text-2xl'} font-semibold" style="color:${x.ghost_type==='worth-it'?'var(--save)':'var(--waste)'}">${x.ghost_type==='worth-it'?F(0):F(x.predicted_waste)}</span>
@@ -327,6 +369,8 @@ function render(){
       </span>
     </button></div>`).join('');
   document.querySelectorAll('#ghostList .row').forEach(b=>b.addEventListener('click',()=>openVerdict(parseInt(b.dataset.i))));
+
+  renderOverlaps();
 
   // savings split
   const wastePct=totalSpend?Math.round(100*totalWaste/totalSpend):0;
@@ -375,6 +419,7 @@ function openVerdict(i){
   document.getElementById('vmVerdict').textContent='thinking...';
   document.getElementById('vmAction').textContent='';
   document.getElementById('vmRemoved').textContent='';
+  renderCompare(g);
   card.classList.add('show');
   const fill=r=>{
     document.getElementById('vmVerdict').textContent=r.verdict||'';
@@ -395,10 +440,37 @@ function makeVerdictModal(){
     <div class="flex items-center justify-between"><div class="chip" id="vmName"></div><button class="chip" onclick="document.getElementById('verdictModal').classList.remove('show')">close ✕</button></div>
     <div class="flex items-center gap-3 mt-3"><span class="badge" id="vmBadge"></span><span class="money text-xl font-semibold text-[var(--waste)]" id="vmWaste"></span></div>
     <div class="border-t border-[var(--rule)] mt-5 pt-5"><div class="chip mb-2">the verdict</div><p class="text-lg leading-relaxed" id="vmVerdict"></p></div>
+    <div class="mt-5" id="vmCompareWrap"><div class="chip mb-2">you pay vs the best plan for you</div>
+      <div class="flex items-stretch gap-3" id="vmCompare"></div>
+    </div>
     <div class="mt-5"><div class="chip mb-2">do this</div><p class="text-lg serif leading-relaxed" style="color:var(--ghost-2)" id="vmAction"></p></div>
     <div class="mt-5 flex items-center justify-between chip"><span id="vmRemoved"></span><span class="flex items-center gap-1">✍️ <span id="vmWriter">gemma</span></span></div>
   </div></div>`;
   document.body.appendChild(d); return d;
+}
+
+function renderCompare(g){
+  const wrap=document.getElementById('vmCompareWrap');
+  const el=document.getElementById('vmCompare');
+  const pay=g.current_annual||g.annual_cost;
+  const best=g.better_annual;
+  const save=g.save||g.predicted_waste;
+  if(g.ghost_type==='worth-it' || best===null || best===undefined){ wrap.style.display='none'; return; }
+  wrap.style.display='block';
+  el.innerHTML=`
+    <div class="flex-1 rounded-xl p-4 border border-[var(--rule)] bg-[var(--bg-2)]">
+      <div class="chip">you pay now</div>
+      <div class="money text-2xl font-semibold text-[var(--waste)] mt-1">${F(pay)}</div>
+      <div class="chip mt-1 truncate">${g.tier||''}</div>
+    </div>
+    <div class="flex items-center justify-center text-[var(--muted)] text-xl">→</div>
+    <div class="flex-1 rounded-xl p-4 border border-[rgba(54,211,153,.4)]" style="background:rgba(54,211,153,.08)">
+      <div class="chip" style="color:var(--save)">best for you</div>
+      <div class="money text-2xl font-semibold text-[var(--save)] mt-1">${best>0?F(best):'cancel'}</div>
+      <div class="chip mt-1 truncate">${g.better_plan||''}</div>
+    </div>`;
+  // animate the numbers
+  gsap.fromTo('#vmCompare > div',{opacity:0,y:10},{opacity:1,y:0,duration:.5,stagger:.08});
 }
 
 function buildSheet(){

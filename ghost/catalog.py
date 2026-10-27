@@ -176,6 +176,10 @@ def default_tier(service):
     return service["tiers"][0]
 
 
+def annual_of(tier):
+    return tier.get("annual_cost") or round(tier["monthly_cost"] * 12)
+
+
 def cheapest_tier_covering(service, needed):
     """The cheapest tier whose `covers` includes everything in `needed`.
 
@@ -192,6 +196,75 @@ def cheapest_tier_covering(service, needed):
     return min(candidates, key=lambda t: t["monthly_cost"])
 
 
+# What each service PROVIDES, as plain capability tags. Used for cross-subscription
+# overlap detection ("you pay for the same thing twice"). Read from the catalog so it
+# stays honest and in one place.
+PROVIDES = {
+    "amazon_prime": {"video", "music", "fast-delivery"},
+    "netflix": {"video"},
+    "jiohotstar": {"video", "sports"},
+    "spotify": {"music"},
+    "youtube_premium": {"video", "music"},
+    "swiggy_one": {"food-delivery"},
+    "zomato_gold": {"food-delivery"},
+    "gym": {"fitness"},
+    "cultfit": {"fitness"},
+    "icloud": {"cloud-storage"},
+    "google_one": {"cloud-storage"},
+    "chatgpt_plus": {"ai"},
+    "linkedin_premium": {"jobs"},
+}
+
+
+def service_id_for_name(name):
+    for s in CATALOG:
+        if s["name"] == name:
+            return s["id"]
+    return None
+
+
+def find_overlaps(subscriptions):
+    """Given the user's subscription list, find pairs that provide the SAME thing.
+
+    Returns a list of overlap findings: which capability is duplicated, which
+    services share it, and which one is the cheaper keep. This is the
+    cross-subscription ghost that single-item logic cannot see.
+    """
+    # map capability -> list of (name, annual_cost, service_id)
+    cap_map = {}
+    for sub in subscriptions:
+        sid = sub.get("service_id") or service_id_for_name(sub.get("name", ""))
+        provides = PROVIDES.get(sid, set())
+        annual = sub.get("annual_cost") or round(sub.get("monthly_cost", 0) * 12)
+        # only count a capability the user actually uses it for (uses > 0)
+        if sub.get("uses_per_month", 0) <= 0:
+            continue
+        for cap in provides:
+            cap_map.setdefault(cap, []).append(
+                {"name": sub.get("name"), "annual": annual, "sid": sid})
+
+    overlaps = []
+    # capabilities where having two really is paying twice for the SAME thing.
+    # video is excluded: people keep several streamers for different catalogues on purpose.
+    DUP_CAPS = {"music", "food-delivery", "cloud-storage", "fitness"}
+    for cap, items in cap_map.items():
+        if len(items) < 2 or cap not in DUP_CAPS:
+            continue
+        items_sorted = sorted(items, key=lambda x: x["annual"])
+        keep = items_sorted[0]
+        drop = items_sorted[1:]
+        drop_cost = sum(d["annual"] for d in drop)
+        overlaps.append({
+            "capability": cap,
+            "services": [i["name"] for i in items_sorted],
+            "keep": keep["name"],
+            "drop": [d["name"] for d in drop],
+            "could_save": drop_cost,
+        })
+    overlaps.sort(key=lambda o: o["could_save"], reverse=True)
+    return overlaps
+
+
 if __name__ == "__main__":
     print(f"{len(CATALOG)} services across {len(CATEGORIES)} categories")
     prime = by_id("amazon_prime")
@@ -200,3 +273,13 @@ if __name__ == "__main__":
     saving = (full["annual_cost"] - shop_only["annual_cost"])
     print(f"Prime over-tier ghost: full {full['annual_cost']} vs shopping-only "
           f"{shop_only['annual_cost']} = {saving}/yr overpaid if you only shop")
+    # overlap demo: YouTube Premium (music) + Spotify (music)
+    subs = [
+        {"name": "YouTube Premium", "annual_cost": 1788, "uses_per_month": 25},
+        {"name": "Spotify", "annual_cost": 3588, "uses_per_month": 20},
+        {"name": "Swiggy One", "annual_cost": 996, "uses_per_month": 4},
+        {"name": "Zomato Gold", "annual_cost": 999, "uses_per_month": 3},
+    ]
+    for o in find_overlaps(subs):
+        print(f"overlap [{o['capability']}]: keep {o['keep']}, drop {o['drop']}, "
+              f"save {o['could_save']}/yr")
