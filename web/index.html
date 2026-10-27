@@ -152,26 +152,41 @@
     <div class="chip hidden sm:block">local · free · no bank login</div>
   </nav>
 
+  <!-- LOUD TRUST BAR -->
+  <div class="glass reveal" id="trustBar">
+    <div class="glass-in px-4 sm:px-6 py-3 flex items-center gap-x-6 gap-y-2 flex-wrap justify-center text-center">
+      <span class="chip flex items-center gap-2" style="color:var(--save)">🔒 no bank login, ever</span>
+      <span class="chip flex items-center gap-2">💻 runs on your device</span>
+      <span class="chip flex items-center gap-2">🆓 open source · ₹0</span>
+      <span class="chip flex items-center gap-2">📤 nothing is uploaded</span>
+    </div>
+  </div>
+
   <!-- HERO / VERDICT -->
-  <section class="min-h-[88dvh] flex flex-col justify-center py-10">
+  <section class="min-h-[84dvh] flex flex-col justify-center py-10">
     <div class="chip reveal" id="h0">👻 Ghost in the Machine · Hacktoberfest 2026</div>
     <h1 class="serif reveal mt-4 text-[2.4rem] sm:text-6xl md:text-7xl font-semibold leading-[1.03] tracking-[-0.02em]" id="h1" style="overflow-wrap:anywhere;min-width:0">
       There is money quietly<br>leaving your account.
     </h1>
     <p class="reveal mt-6 text-lg md:text-xl text-[var(--muted)] max-w-[58ch] leading-relaxed" id="h2">
-      Subscriptions you forgot, plans too big for how you use them, prices that quietly crept up,
-      and the gym you stopped going to in February. An open model finds them and tells you the one
-      thing to do about each. <span class="text-[var(--ink)]">It runs on your own machine, for free.</span>
+      Most people underestimate what they pay for subscriptions by about 2.5x. The small charges
+      do not register, so they keep leaving. An open model finds the ones quietly wasting money and
+      tells you the one thing to do about each. <span class="text-[var(--ink)]">It runs on your own machine, for free.</span>
     </p>
 
     <!-- the big verdict number -->
     <div class="glass reveal mt-10" id="verdictCard">
       <div class="glass-in verdict-glow p-7 sm:p-10">
-        <div class="chip">found quietly leaving you</div>
+        <div class="chip">leaking out of your account</div>
         <div class="money shimmer mt-2 font-semibold text-5xl sm:text-7xl tracking-tight" id="bigWaste">₹0</div>
-        <div class="text-[var(--muted)] mt-1">per year, across <span id="subCount">0</span> subscriptions</div>
+        <div class="text-[var(--muted)] mt-1">every year, across <span id="subCount">0</span> subscriptions</div>
+        <div class="mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,93,93,.1);border:1px solid rgba(255,93,93,.25)">
+          <span class="chip" style="color:#ff8a8a">left alone, that is</span>
+          <span class="money font-semibold text-[var(--waste)]" id="fiveYear">₹0</span>
+          <span class="chip" style="color:#ff8a8a">over 5 years</span>
+        </div>
         <div class="mt-7 flex flex-wrap items-center gap-3">
-          <button class="btn mag px-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="seeBtn">See the ghosts</button>
+          <button class="btn mag px-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="seeBtn">Stop the leak</button>
           <button class="btn mag px-6 py-3.5 font-semibold border border-[var(--rule)] text-[var(--ink)]" id="addBtn">Add your own</button>
         </div>
         <div class="chip mt-4">👆 showing a sample person's subscriptions · add yours anytime, nothing is uploaded</div>
@@ -204,12 +219,12 @@
     <div class="glass reveal sp">
       <div class="glass-in p-7 sm:p-10 grid md:grid-cols-2 gap-8 items-center">
         <div>
-          <div class="chip">if you act on every ghost</div>
+          <div class="chip">stop the leak and reclaim</div>
           <div class="money save-shimmer mt-2 font-semibold text-4xl sm:text-6xl" id="saveNum">₹0</div>
-          <div class="text-[var(--muted)] mt-1">back in your pocket every year</div>
+          <div class="text-[var(--muted)] mt-1">a year that is currently bleeding out · <span class="text-[var(--save)] money" id="reclaimed">₹0</span> reclaimed so far</div>
           <div class="mt-6 h-3 rounded-full overflow-hidden flex bg-[var(--bg-2)]" id="splitBar"></div>
           <div class="flex gap-5 mt-3 chip">
-            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--waste)"></span><span id="wastePct">0</span>% ghost</span>
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--waste)"></span><span id="wastePct">0</span>% leaking</span>
             <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--save)"></span><span id="worthPct">0</span>% worth it</span>
           </div>
         </div>
@@ -308,6 +323,36 @@ function magnetize(){
 
 function badgeClass(t){return 'b-'+t}
 
+let RECLAIMED=0;
+// the satisfying "stop the leak" moment: mark handled, drop the big total, tick the counter
+function killGhost(i,btn){
+  const g=DATA.ghosts[i]; if(!g||g._killed) return;
+  g._killed=true;
+  const amount=g.save||g.predicted_waste;
+  RECLAIMED+=amount;
+  // shrink the leak totals
+  DATA.total_waste_year=Math.max(0,(DATA.total_waste_year||0)-amount);
+  const card=btn.closest('.glass');
+  btn.textContent='✓ leak stopped';
+  btn.style.opacity='0.6';
+  gsap.to(card,{opacity:0.45,duration:.4});
+  // animate the big numbers DOWN + the reclaimed counter UP
+  const big=document.getElementById('bigWaste');
+  countUp(big,DATA.total_waste_year,F);
+  countUp(document.getElementById('fiveYear'),DATA.total_waste_year*5,F);
+  const rc=document.getElementById('reclaimed'); if(rc) countUp(rc,RECLAIMED,F);
+  const sn=document.getElementById('saveNum'); if(sn) countUp(sn,Math.max(0,(DATA.total_waste_year)),F);
+  // a tiny coin-rise feedback
+  burstCoin(btn);
+}
+function burstCoin(near){
+  const c=document.createElement('div');c.textContent='₹';c.className='money';
+  const r=near.getBoundingClientRect();
+  c.style.cssText=`position:fixed;left:${r.left+r.width/2}px;top:${r.top}px;z-index:9999;color:var(--save);font-weight:700;pointer-events:none`;
+  document.body.appendChild(c);
+  gsap.to(c,{y:-40,opacity:0,duration:1,ease:'power2.out',onComplete:()=>c.remove()});
+}
+
 // what each service provides, for cross-subscription overlap (mirror of catalog.PROVIDES)
 const PROVIDES={
   "Amazon Prime":["video","music"],"Netflix":["video"],"JioHotstar":["video","sports"],
@@ -355,20 +400,32 @@ function render(){
   document.getElementById('engineTag').textContent='engine: '+(DATA.engine||'tabpfn');
 
   // ghost list (first item = spotlighted hero ghost)
-  document.getElementById('ghostList').innerHTML=g.map((x,i)=>`
-    <div class="glass reveal gl ${i===0?'hero-ghost':''}"><button class="row grow edge-${x.ghost_type} w-full text-left glass-in p-4 sm:p-5 flex items-center gap-4 rounded-[21px]" data-i="${i}">
-      ${logoChip(x)}
-      <span class="flex-1 min-w-0">
-        <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold ${i===0?'text-lg':''} truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
-        <span class="chip block mt-1">${x.tier} · used ~${x.uses_per_month}x/mo · ${F(x.annual_cost)}/yr</span>
-        ${x.ghost_type!=='worth-it'&&x.better_plan?`<span class="chip block mt-1" style="color:var(--save)">→ ${x.better_annual>0?'move to '+x.better_plan+' at '+F(x.better_annual):x.better_plan} · save ${F(x.save||x.predicted_waste)}</span>`:''}
-      </span>
-      <span class="text-right shrink-0">
-        <span class="money block ${i===0?'text-2xl sm:text-3xl':'text-xl sm:text-2xl'} font-semibold" style="color:${x.ghost_type==='worth-it'?'var(--save)':'var(--waste)'}">${x.ghost_type==='worth-it'?F(0):F(x.predicted_waste)}</span>
-        <span class="chip block">${x.ghost_type==='worth-it'?'worth it':'wasted/yr'}</span>
-      </span>
-    </button></div>`).join('');
+  document.getElementById('ghostList').innerHTML=g.map((x,i)=>{
+    const isGhost=x.ghost_type!=='worth-it';
+    const fiveY=(x.save||x.predicted_waste)*5;
+    return `
+    <div class="glass reveal gl ${i===0&&isGhost?'hero-ghost':''}">
+      <div class="grow edge-${x.ghost_type} glass-in p-4 sm:p-5 rounded-[21px]">
+        <button class="row w-full text-left flex items-center gap-3 sm:gap-4" data-i="${i}">
+          ${logoChip(x)}
+          <span class="flex-1 min-w-0">
+            <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold ${i===0&&isGhost?'text-lg':''} truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
+            <span class="chip block mt-1 truncate">${x.tier} · ~${x.uses_per_month}x/mo · ${F(x.annual_cost)}/yr</span>
+          </span>
+          <span class="text-right shrink-0">
+            <span class="money block ${i===0&&isGhost?'text-2xl sm:text-3xl':'text-xl sm:text-2xl'} font-semibold" style="color:${isGhost?'var(--waste)':'var(--save)'}">${isGhost?F(x.predicted_waste):F(0)}</span>
+            <span class="chip block">${isGhost?'leaking/yr':'worth it'}</span>
+          </span>
+        </button>
+        ${isGhost?`<div class="mt-3 pt-3 flex items-center justify-between gap-3 flex-wrap" style="border-top:1px solid var(--rule)">
+          <span class="chip" style="color:var(--save)">${x.better_annual>0?'→ '+x.better_plan+' at '+F(x.better_annual):'→ '+x.better_plan} · ${F(x.save||x.predicted_waste)}/yr · ${F(fiveY)} over 5y</span>
+          <button class="btn killbtn text-sm px-4 py-2 font-semibold" style="background:rgba(54,211,153,.14);color:var(--save);border:1px solid rgba(54,211,153,.3)" data-kill="${i}">Stop this leak</button>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
   document.querySelectorAll('#ghostList .row').forEach(b=>b.addEventListener('click',()=>openVerdict(parseInt(b.dataset.i))));
+  document.querySelectorAll('#ghostList .killbtn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();killGhost(parseInt(b.dataset.kill),b);}));
 
   renderOverlaps();
 
@@ -521,7 +578,8 @@ function closeSheet(){document.getElementById('sheet').classList.remove('show')}
 function animate(waste){
   gsap.registerPlugin(ScrollTrigger);
   gsap.to('.reveal',{opacity:1,y:0,duration:.9,ease:'power3.out',stagger:.06,
-    onComplete:()=>{countUp(document.getElementById('bigWaste'),waste,F);}});
+    onComplete:()=>{countUp(document.getElementById('bigWaste'),waste,F);
+      const fy=document.getElementById('fiveYear'); if(fy) countUp(fy,waste*5,F);}});
   gsap.utils.toArray('.reveal').forEach(el=>{
     if(el.closest('#ghostsSection, section:nth-of-type(n+3)')){
       gsap.set(el,{opacity:0,y:20});
