@@ -1,0 +1,618 @@
+{
+  "version": "1.0.0",
+  "engine": "tabpfn",
+  "currency": "INR",
+  "total_spend_year": 58395,
+  "total_waste_year": 42231,
+  "scorecard": {
+    "engine": "tabpfn",
+    "holdout_count": 100,
+    "mae_rupees": 523,
+    "rank_correlation": 0.971,
+    "top_k": 20,
+    "precision_at_k": 0.85,
+    "missed": 3,
+    "rupees_captured_pct": 96
+  },
+  "ghosts": [
+    {
+      "name": "ChatGPT Plus",
+      "tier": "Plus",
+      "monthly_cost": 1900,
+      "annual_cost": 22800,
+      "uses_per_month": 2,
+      "months_active": 6,
+      "price_creep_pct": 35,
+      "is_annual_prepaid": 0,
+      "trial_converted": 1,
+      "n_tiers": 1,
+      "category": "productivity",
+      "stopped_using": 0,
+      "predicted_waste": 15232,
+      "ghost_type": "crept",
+      "ghost_label": "Price crept",
+      "verdict": {
+        "verdict": "The price of ChatGPT Plus quietly rose, and you are now wasting about 15232 rupees a year.",
+        "action": "Check if the current price is still worth it, or downgrade.",
+        "writer": "gemma+fallback",
+        "removed": 0
+      }
+    },
+    {
+      "name": "Gym / Fitness",
+      "tier": "Annual (New Year pack)",
+      "monthly_cost": 833,
+      "annual_cost": 10000,
+      "uses_per_month": 1,
+      "months_active": 2,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 1,
+      "trial_converted": 0,
+      "n_tiers": 3,
+      "category": "fitness",
+      "stopped_using": 0,
+      "predicted_waste": 8764,
+      "ghost_type": "abandoned",
+      "ghost_label": "Abandoned",
+      "verdict": {
+        "verdict": "Cancel the gym membership.",
+        "action": "Stop using the gym monthly.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "iCloud+",
+      "tier": "2 TB",
+      "monthly_cost": 749,
+      "annual_cost": 8988,
+      "uses_per_month": 3,
+      "months_active": 18,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 0,
+      "trial_converted": 0,
+      "n_tiers": 3,
+      "category": "cloud",
+      "stopped_using": 0,
+      "predicted_waste": 8641,
+      "ghost_type": "over-tier",
+      "ghost_label": "Over-tier",
+      "verdict": {
+        "verdict": "Cancel the iCloud+ subscription.",
+        "action": "Stop using the service every month.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "Netflix",
+      "tier": "Premium",
+      "monthly_cost": 649,
+      "annual_cost": 7788,
+      "uses_per_month": 1,
+      "months_active": 11,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 0,
+      "trial_converted": 0,
+      "n_tiers": 4,
+      "category": "streaming",
+      "stopped_using": 0,
+      "predicted_waste": 7736,
+      "ghost_type": "over-tier",
+      "ghost_label": "Over-tier",
+      "verdict": {
+        "verdict": "Cancel the Netflix Premium subscription.",
+        "action": "Stop using the service.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "Amazon Prime",
+      "tier": "Full Prime (annual)",
+      "monthly_cost": 124.9,
+      "annual_cost": 1499,
+      "uses_per_month": 2,
+      "months_active": 14,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 1,
+      "trial_converted": 1,
+      "n_tiers": 4,
+      "category": "shopping",
+      "stopped_using": 0,
+      "predicted_waste": 1342,
+      "ghost_type": "over-tier",
+      "ghost_label": "Over-tier",
+      "verdict": {
+        "verdict": "Cancel the Amazon Prime subscription.",
+        "action": "Stop using it every month.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "Swiggy One",
+      "tier": "One (3 months)",
+      "monthly_cost": 83,
+      "annual_cost": 996,
+      "uses_per_month": 1,
+      "months_active": 3,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 1,
+      "trial_converted": 0,
+      "n_tiers": 1,
+      "category": "food",
+      "stopped_using": 0,
+      "predicted_waste": 516,
+      "ghost_type": "abandoned",
+      "ghost_label": "Abandoned",
+      "verdict": {
+        "verdict": "Cancel the Swiggy One subscription.",
+        "action": "Stop using the service.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "Spotify",
+      "tier": "Platinum",
+      "monthly_cost": 299,
+      "annual_cost": 3588,
+      "uses_per_month": 20,
+      "months_active": 9,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 0,
+      "trial_converted": 0,
+      "n_tiers": 3,
+      "category": "music",
+      "stopped_using": 0,
+      "predicted_waste": 61,
+      "ghost_type": "worth-it",
+      "ghost_label": "Worth it",
+      "verdict": {
+        "verdict": "Cancel your Spotify Platinum subscription.",
+        "action": "Stop using Spotify monthly.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "YouTube Premium",
+      "tier": "Individual",
+      "monthly_cost": 149,
+      "annual_cost": 1788,
+      "uses_per_month": 25,
+      "months_active": 20,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 0,
+      "trial_converted": 0,
+      "n_tiers": 1,
+      "category": "streaming",
+      "stopped_using": 0,
+      "predicted_waste": 22,
+      "ghost_type": "worth-it",
+      "ghost_label": "Worth it",
+      "verdict": {
+        "verdict": "Cancel the YouTube Premium subscription.",
+        "action": "Stop using YouTube Premium.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    },
+    {
+      "name": "JioHotstar",
+      "tier": "Mobile",
+      "monthly_cost": 79,
+      "annual_cost": 948,
+      "uses_per_month": 18,
+      "months_active": 10,
+      "price_creep_pct": 0,
+      "is_annual_prepaid": 0,
+      "trial_converted": 0,
+      "n_tiers": 3,
+      "category": "streaming",
+      "stopped_using": 0,
+      "predicted_waste": 21,
+      "ghost_type": "worth-it",
+      "ghost_label": "Worth it",
+      "verdict": {
+        "verdict": "Cancel the JioHotstar subscription.",
+        "action": "Stop using it every month.",
+        "writer": "gemma",
+        "removed": 0
+      }
+    }
+  ],
+  "catalog": {
+    "categories": {
+      "streaming": {
+        "label": "Streaming",
+        "emoji": "🎬"
+      },
+      "music": {
+        "label": "Music",
+        "emoji": "🎧"
+      },
+      "shopping": {
+        "label": "Shopping",
+        "emoji": "📦"
+      },
+      "food": {
+        "label": "Food delivery",
+        "emoji": "🍔"
+      },
+      "fitness": {
+        "label": "Fitness",
+        "emoji": "🏋️"
+      },
+      "cloud": {
+        "label": "Cloud storage",
+        "emoji": "☁️"
+      },
+      "productivity": {
+        "label": "Productivity",
+        "emoji": "🤖"
+      },
+      "other": {
+        "label": "Other",
+        "emoji": "🔁"
+      }
+    },
+    "services": [
+      {
+        "id": "amazon_prime",
+        "name": "Amazon Prime",
+        "category": "shopping",
+        "emoji": "📦",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Full Prime (annual)",
+            "monthly_cost": 124.9,
+            "annual_cost": 1499,
+            "covers": [
+              "shopping",
+              "video",
+              "music"
+            ]
+          },
+          {
+            "tier": "Full Prime (monthly)",
+            "monthly_cost": 299,
+            "annual_cost": 3588,
+            "covers": [
+              "shopping",
+              "video",
+              "music"
+            ]
+          },
+          {
+            "tier": "Prime Lite",
+            "monthly_cost": 66.6,
+            "annual_cost": 799,
+            "covers": [
+              "shopping",
+              "video-1device"
+            ]
+          },
+          {
+            "tier": "Prime Shopping Edition",
+            "monthly_cost": 33.3,
+            "annual_cost": 399,
+            "covers": [
+              "shopping"
+            ]
+          }
+        ],
+        "note": "Shopping Edition at 399 a year drops video entirely. If you only use Prime for delivery, the full 1499 plan is mostly video you do not watch."
+      },
+      {
+        "id": "netflix",
+        "name": "Netflix",
+        "category": "streaming",
+        "emoji": "🎬",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Mobile",
+            "monthly_cost": 149,
+            "covers": [
+              "video-1device-sd"
+            ]
+          },
+          {
+            "tier": "Basic",
+            "monthly_cost": 199,
+            "covers": [
+              "video-1device-hd"
+            ]
+          },
+          {
+            "tier": "Standard",
+            "monthly_cost": 499,
+            "covers": [
+              "video-2screen-fhd"
+            ]
+          },
+          {
+            "tier": "Premium",
+            "monthly_cost": 649,
+            "covers": [
+              "video-4screen-4k"
+            ]
+          }
+        ],
+        "note": "If you watch on your phone, Mobile at 149 is the same catalogue as Premium at 649, just fewer screens and lower resolution."
+      },
+      {
+        "id": "jiohotstar",
+        "name": "JioHotstar",
+        "category": "streaming",
+        "emoji": "📺",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Mobile",
+            "monthly_cost": 79,
+            "covers": [
+              "video-1device"
+            ]
+          },
+          {
+            "tier": "Super",
+            "monthly_cost": 149,
+            "covers": [
+              "video-2device-tv"
+            ]
+          },
+          {
+            "tier": "Premium",
+            "monthly_cost": 299,
+            "annual_cost": 2199,
+            "covers": [
+              "video-4device-4k"
+            ]
+          }
+        ],
+        "note": "Premium is for 4 screens in 4K. One viewer rarely needs it."
+      },
+      {
+        "id": "spotify",
+        "name": "Spotify",
+        "category": "music",
+        "emoji": "🎧",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Student",
+            "monthly_cost": 69,
+            "covers": [
+              "music",
+              "student"
+            ]
+          },
+          {
+            "tier": "Standard",
+            "monthly_cost": 139,
+            "covers": [
+              "music"
+            ]
+          },
+          {
+            "tier": "Platinum",
+            "monthly_cost": 299,
+            "covers": [
+              "music",
+              "extras"
+            ]
+          }
+        ],
+        "note": "If you are a student, the 69 plan is the same music as the 139 plan."
+      },
+      {
+        "id": "youtube_premium",
+        "name": "YouTube Premium",
+        "category": "streaming",
+        "emoji": "▶️",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Individual",
+            "monthly_cost": 149,
+            "covers": [
+              "video",
+              "music"
+            ]
+          }
+        ],
+        "note": "Includes YouTube Music. If you also pay for Spotify, one of them is a ghost."
+      },
+      {
+        "id": "swiggy_one",
+        "name": "Swiggy One",
+        "category": "food",
+        "emoji": "🍔",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "One (3 months)",
+            "monthly_cost": 83,
+            "annual_cost": 996,
+            "covers": [
+              "free-delivery"
+            ]
+          }
+        ],
+        "note": "Only pays off if you order often. A few orders a month and it is a ghost."
+      },
+      {
+        "id": "zomato_gold",
+        "name": "Zomato Gold",
+        "category": "food",
+        "emoji": "🍽️",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Gold (annual)",
+            "monthly_cost": 83,
+            "annual_cost": 999,
+            "covers": [
+              "free-delivery",
+              "discounts"
+            ]
+          }
+        ],
+        "note": "Overlaps heavily with Swiggy One. Few people need both."
+      },
+      {
+        "id": "gym",
+        "name": "Gym / Fitness",
+        "category": "fitness",
+        "emoji": "🏋️",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Annual (New Year pack)",
+            "monthly_cost": 833,
+            "annual_cost": 10000,
+            "covers": [
+              "gym"
+            ]
+          },
+          {
+            "tier": "Monthly",
+            "monthly_cost": 1200,
+            "covers": [
+              "gym"
+            ]
+          },
+          {
+            "tier": "Quarterly",
+            "monthly_cost": 1000,
+            "annual_cost": 12000,
+            "covers": [
+              "gym"
+            ]
+          }
+        ],
+        "note": "80 percent of people who join in January stop going by March. If you paid a year upfront and stopped, the rest is a ghost. A monthly plan would have let you stop paying when you stopped going."
+      },
+      {
+        "id": "cultfit",
+        "name": "cult.fit",
+        "category": "fitness",
+        "emoji": "🧘",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Elite (annual)",
+            "monthly_cost": 1000,
+            "annual_cost": 12000,
+            "covers": [
+              "gym",
+              "classes"
+            ]
+          },
+          {
+            "tier": "Pro (monthly)",
+            "monthly_cost": 1500,
+            "covers": [
+              "gym",
+              "classes"
+            ]
+          }
+        ],
+        "note": "Same abandonment risk as any gym. Match the plan to how often you really go."
+      },
+      {
+        "id": "icloud",
+        "name": "iCloud+",
+        "category": "cloud",
+        "emoji": "☁️",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "50 GB",
+            "monthly_cost": 75,
+            "covers": [
+              "storage-50"
+            ]
+          },
+          {
+            "tier": "200 GB",
+            "monthly_cost": 219,
+            "covers": [
+              "storage-200"
+            ]
+          },
+          {
+            "tier": "2 TB",
+            "monthly_cost": 749,
+            "covers": [
+              "storage-2tb"
+            ]
+          }
+        ],
+        "note": "Many people pay for 2 TB and use under 50 GB."
+      },
+      {
+        "id": "google_one",
+        "name": "Google One",
+        "category": "cloud",
+        "emoji": "🗄️",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "100 GB",
+            "monthly_cost": 130,
+            "covers": [
+              "storage-100"
+            ]
+          },
+          {
+            "tier": "2 TB",
+            "monthly_cost": 650,
+            "covers": [
+              "storage-2tb"
+            ]
+          }
+        ],
+        "note": "Check your actual storage used before paying for the 2 TB tier."
+      },
+      {
+        "id": "chatgpt_plus",
+        "name": "ChatGPT Plus",
+        "category": "productivity",
+        "emoji": "🤖",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Plus",
+            "monthly_cost": 1900,
+            "covers": [
+              "ai"
+            ]
+          }
+        ],
+        "note": "Useful if you use it weekly. If you opened it twice last month, it is a ghost."
+      },
+      {
+        "id": "linkedin_premium",
+        "name": "LinkedIn Premium",
+        "category": "productivity",
+        "emoji": "💼",
+        "currency": "INR",
+        "tiers": [
+          {
+            "tier": "Career",
+            "monthly_cost": 1400,
+            "covers": [
+              "jobs"
+            ]
+          }
+        ],
+        "note": "People often subscribe during a job hunt and forget to cancel after."
+      }
+    ]
+  }
+}

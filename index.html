@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Subscription Ghost · find the money quietly leaving your account</title>
+<meta name="description" content="An open model finds the subscriptions quietly wasting your money and tells you the one thing to do about each. Runs locally, free, no bank login.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Subscription Ghost">
+<meta property="og:description" content="Find the money quietly leaving your account every month. Local, free, private.">
+<meta property="og:image" content="https://simplynadaf.github.io/subscription-ghost/assets/og.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+
+<style>
+  :root{
+    --bg:#0a0b10;            /* OLED near-black, tinted */
+    --bg-2:#111320;
+    --card:#14172340;
+    --ink:#eef1f7;
+    --muted:#9aa3b8;
+    --soft:#5f6880;
+    --ghost:#7c6cff;        /* spectral violet, the ghost accent */
+    --ghost-2:#a996ff;
+    --waste:#ff5d5d;        /* red = money being wasted (state only) */
+    --warn:#f5a623;         /* amber = watch */
+    --save:#36d399;         /* green = money saved (state only) */
+    --rule:rgba(255,255,255,0.08);
+    --ease:cubic-bezier(0.32,0.72,0,1);
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{overflow-x:clip}
+  body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;min-height:100dvh;-webkit-font-smoothing:antialiased}
+  .serif{font-family:'Fraunces',Georgia,serif}
+  .money{font-family:var(--mono);font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  .chip{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  /* atmosphere */
+  .aura{position:fixed;border-radius:50%;filter:blur(100px);opacity:.35;pointer-events:none;z-index:0;will-change:transform}
+  .aura-1{width:480px;height:480px;top:-10%;left:-6%;background:radial-gradient(circle,rgba(124,108,255,.6),transparent 70%);animation:drift1 18s var(--ease) infinite}
+  .aura-2{width:420px;height:420px;bottom:-12%;right:-6%;background:radial-gradient(circle,rgba(255,93,93,.32),transparent 70%);animation:drift2 22s var(--ease) infinite}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* a single drifting ghost wisp */
+  .wisp{position:fixed;z-index:1;pointer-events:none;font-size:26px;opacity:.10;filter:blur(.3px);animation:wisp 26s linear infinite}
+  @keyframes wisp{0%{transform:translate(-5vw,80vh)}100%{transform:translate(105vw,-10vh)}}
+
+  main{position:relative;z-index:5}
+
+  .glass{position:relative;border-radius:22px;padding:1px;background:linear-gradient(145deg,rgba(124,108,255,.35),rgba(255,255,255,.04) 50%,rgba(255,255,255,.02));box-shadow:0 24px 60px -30px rgba(0,0,0,.85)}
+  .glass-in{border-radius:21px;background:linear-gradient(180deg,rgba(20,23,35,.9),rgba(12,14,22,.94));backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%)}
+
+  .btn{position:relative;overflow:hidden;border-radius:999px;transition:transform .16s var(--ease)}
+  .btn:active{transform:scale(.97)}
+  .btn::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.25) 50%,transparent 65%);transform:translateX(-120%)}
+  .btn:hover::after{transform:translateX(120%);transition:transform .7s var(--ease)}
+
+  .reveal{opacity:0;transform:translateY(20px)}
+
+  .tile{transition:transform .18s var(--ease),border-color .18s var(--ease),background .18s var(--ease);border:1px solid var(--rule)}
+  .tile:hover{transform:translateY(-3px);border-color:rgba(124,108,255,.5);background:rgba(124,108,255,.08)}
+  .tile.on{border-color:var(--ghost);background:rgba(124,108,255,.14)}
+
+  .seg{transition:color .2s var(--ease)}
+  .seg.active{color:var(--ink)}
+
+  .badge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:7px}
+  .b-abandoned{background:rgba(255,93,93,.15);color:#ff8a8a}
+  .b-over-tier{background:rgba(124,108,255,.16);color:var(--ghost-2)}
+  .b-dead{background:rgba(255,93,93,.15);color:#ff8a8a}
+  .b-crept{background:rgba(245,166,35,.16);color:var(--warn)}
+  .b-worth-it{background:rgba(54,211,153,.14);color:var(--save)}
+
+  .row{transition:background .25s var(--ease),transform .25s var(--ease)}
+  .row:hover{background:rgba(255,255,255,.03)}
+
+  .sheet{position:fixed;inset:0;z-index:60;display:none}
+  .sheet.show{display:block}
+  .sheet-bg{position:absolute;inset:0;background:rgba(5,6,12,.72);backdrop-filter:blur(6px)}
+  .sheet-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,94vw);max-height:88dvh;overflow:auto}
+  @media (max-width:640px){.sheet-panel{left:0;top:auto;bottom:0;transform:none;width:100vw;max-height:92dvh;border-radius:22px 22px 0 0}}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.aura,.wisp{display:none}}
+</style>
+</head>
+<body>
+
+<div class="aura aura-1"></div>
+<div class="aura aura-2"></div>
+<div class="grain"></div>
+<div class="wisp">👻</div>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6">
+
+  <!-- NAV -->
+  <nav class="flex items-center justify-between py-5">
+    <div class="flex items-center gap-2 font-semibold"><span>👻</span><span class="serif text-xl">Subscription Ghost</span></div>
+    <div class="chip hidden sm:block">local · free · no bank login</div>
+  </nav>
+
+  <!-- HERO / VERDICT -->
+  <section class="min-h-[88dvh] flex flex-col justify-center py-10">
+    <div class="chip reveal" id="h0">👻 Ghost in the Machine · Hacktoberfest 2026</div>
+    <h1 class="serif reveal mt-4 text-[2.4rem] sm:text-6xl md:text-7xl font-semibold leading-[1.03] tracking-[-0.02em]" id="h1" style="overflow-wrap:anywhere;min-width:0">
+      There is money quietly<br>leaving your account.
+    </h1>
+    <p class="reveal mt-6 text-lg md:text-xl text-[var(--muted)] max-w-[58ch] leading-relaxed" id="h2">
+      Subscriptions you forgot, plans too big for how you use them, prices that quietly crept up,
+      and the gym you stopped going to in February. An open model finds them and tells you the one
+      thing to do about each. <span class="text-[var(--ink)]">It runs on your own machine, for free.</span>
+    </p>
+
+    <!-- the big verdict number -->
+    <div class="glass reveal mt-10" id="verdictCard">
+      <div class="glass-in p-7 sm:p-10">
+        <div class="chip">found quietly leaving you</div>
+        <div class="money mt-2 font-semibold text-[var(--waste)] text-5xl sm:text-7xl tracking-tight" id="bigWaste">₹0</div>
+        <div class="text-[var(--muted)] mt-1">per year, across <span id="subCount">0</span> subscriptions</div>
+        <div class="mt-7 flex flex-wrap items-center gap-3">
+          <button class="btn px-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="seeBtn">See the ghosts</button>
+          <button class="btn px-6 py-3.5 font-semibold border border-[var(--rule)] text-[var(--ink)]" id="addBtn">Add your own</button>
+        </div>
+        <div class="chip mt-4">👆 showing a sample person's subscriptions · add yours anytime, nothing is uploaded</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE GHOSTS (work queue) -->
+  <section class="py-14" id="ghostsSection">
+    <div class="flex items-end justify-between flex-wrap gap-3">
+      <div>
+        <div class="chip reveal gs">The decision · TabPFN</div>
+        <h2 class="serif reveal gs text-3xl md:text-5xl font-semibold mt-2 tracking-[-0.01em]">Your ghosts, worst first.</h2>
+      </div>
+      <div class="chip reveal gs" id="engineTag">engine: tabpfn</div>
+    </div>
+    <p class="reveal gs mt-4 text-[var(--muted)] max-w-[60ch]">Every subscription, ranked by how much it quietly wastes. Tap one and a local Gemma writes the verdict and the single action, using only your real numbers.</p>
+
+    <div class="mt-8 flex flex-col gap-3" id="ghostList"></div>
+  </section>
+
+  <!-- SAVINGS SPLIT -->
+  <section class="py-14">
+    <div class="glass reveal sp">
+      <div class="glass-in p-7 sm:p-10 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="chip">if you act on every ghost</div>
+          <div class="money mt-2 font-semibold text-[var(--save)] text-4xl sm:text-6xl" id="saveNum">₹0</div>
+          <div class="text-[var(--muted)] mt-1">back in your pocket every year</div>
+          <div class="mt-6 h-3 rounded-full overflow-hidden flex bg-[var(--bg-2)]" id="splitBar"></div>
+          <div class="flex gap-5 mt-3 chip">
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--waste)"></span><span id="wastePct">0</span>% ghost</span>
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:var(--save)"></span><span id="worthPct">0</span>% worth it</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-px bg-[var(--rule)] rounded-2xl overflow-hidden" id="statGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HONEST SCORECARD -->
+  <section class="py-14">
+    <div class="chip reveal hc">The honest part</div>
+    <h2 class="serif reveal hc text-3xl md:text-5xl font-semibold mt-2 tracking-[-0.01em]">A prediction can be wrong.</h2>
+    <p class="reveal hc mt-4 text-[var(--muted)] max-w-[58ch]">We fit the model on subscriptions it has seen, then test it on ones it has not. The number that matters is the last one: the real ghosts it still misses.</p>
+    <div class="glass reveal hc mt-8">
+      <div class="glass-in p-6 sm:p-9 grid grid-cols-2 sm:grid-cols-4 gap-px bg-[var(--rule)] rounded-[21px] overflow-hidden" id="scoreGrid"></div>
+    </div>
+    <p class="reveal hc mt-4 chip">data is synthetic and labeled · prices are real 2026 catalog prices · the code computes every rupee, Gemma only phrases it</p>
+  </section>
+
+  <!-- WHY OPEN -->
+  <section class="py-16">
+    <div class="chip reveal wo">Why open innovation matters</div>
+    <h2 class="serif reveal wo text-3xl md:text-5xl font-semibold mt-2 tracking-[-0.01em] max-w-[20ch]">A tool that finds money leaks should not be one.</h2>
+    <div class="grid sm:grid-cols-3 gap-4 mt-9" id="whyGrid"></div>
+  </section>
+
+  <footer class="py-14 border-t border-[var(--rule)] text-center">
+    <div class="chip mb-3">TabPFN predicts · Gemma writes · nothing leaves your machine</div>
+    <p class="text-[var(--muted)]">Built by <a href="https://sarvarnadaf.com" style="color:var(--ghost-2)">Sarvar Nadaf</a> for Hacktoberfest 2026.</p>
+    <p class="chip mt-2">open weights · local on CPU · MIT · ₹0 to run</p>
+  </footer>
+</main>
+
+<!-- ADD SHEET -->
+<div class="sheet" id="sheet">
+  <div class="sheet-bg" id="sheetBg"></div>
+  <div class="sheet-panel glass">
+    <div class="glass-in p-6 sm:p-8">
+      <div class="flex items-center justify-between">
+        <h3 class="serif text-2xl font-semibold">Add a subscription</h3>
+        <button class="chip" id="sheetClose">close ✕</button>
+      </div>
+      <p class="chip mt-2">tap what you pay for · the price fills in automatically · nothing is uploaded</p>
+      <div class="mt-5 flex flex-wrap gap-2" id="catalogTiles"></div>
+      <div class="mt-6 border-t border-[var(--rule)] pt-5">
+        <div class="chip mb-2">how often do you really use it?</div>
+        <div class="flex gap-2 flex-wrap" id="usagePick"></div>
+      </div>
+      <button class="btn w-full mt-6 py-3.5 font-semibold text-[var(--bg)]" style="background:linear-gradient(120deg,var(--ghost-2),var(--ghost))" id="addConfirm">Add and find its ghost</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const F = n => '₹' + Math.round(n).toLocaleString('en-IN');
+let DATA=null, CATALOG=null, pick={service:null, uses:4};
+
+async function load(){
+  try{ const h=await fetch('/api/health'); if(h.ok){
+    const cat=await (await fetch('/api/catalog')).json();
+    const sc=await (await fetch('/api/scorecard')).json();
+    // live: analyze the baked demo list is not available, so load static for the demo list
+    const s=await (await fetch('assets/static-data.json')).json();
+    return {...s, scorecard:sc, catalog:cat, mode:'live'};
+  }}catch(e){}
+  try{ const s=await (await fetch('assets/static-data.json')).json(); return {...s, mode:'static'}; }catch(e){}
+  return null;
+}
+
+const countUp=(el,to,fmt)=>gsap.to({v:0},{v:to,duration:1.6,ease:'power3.out',onUpdate:function(){el.textContent=fmt(this.targets()[0].v)}});
+
+function badgeClass(t){return 'b-'+t}
+
+function render(){
+  const g=DATA.ghosts||[];
+  CATALOG=DATA.catalog;
+  const ghosts=g.filter(x=>x.ghost_type!=='worth-it');
+  const worth=g.filter(x=>x.ghost_type==='worth-it');
+  const totalWaste=DATA.total_waste_year||ghosts.reduce((a,b)=>a+b.predicted_waste,0);
+  const totalSpend=DATA.total_spend_year||g.reduce((a,b)=>a+b.annual_cost,0);
+
+  document.getElementById('subCount').textContent=g.length;
+  document.getElementById('engineTag').textContent='engine: '+(DATA.engine||'tabpfn');
+
+  // ghost list
+  document.getElementById('ghostList').innerHTML=g.map((x,i)=>`
+    <div class="glass reveal gl"><button class="row w-full text-left glass-in p-4 sm:p-5 flex items-center gap-4 rounded-[21px]" data-i="${i}">
+      <span class="text-2xl w-9 text-center">${serviceEmoji(x)}</span>
+      <span class="flex-1 min-w-0">
+        <span class="flex items-center gap-2 flex-wrap"><span class="font-semibold truncate">${x.name}</span><span class="badge ${badgeClass(x.ghost_type)}">${x.ghost_label}</span></span>
+        <span class="chip block mt-1">${x.tier} · used ~${x.uses_per_month}x/mo · ${F(x.annual_cost)}/yr</span>
+      </span>
+      <span class="text-right shrink-0">
+        <span class="money block text-xl sm:text-2xl font-semibold" style="color:${x.ghost_type==='worth-it'?'var(--save)':'var(--waste)'}">${x.ghost_type==='worth-it'?F(0):F(x.predicted_waste)}</span>
+        <span class="chip block">${x.ghost_type==='worth-it'?'worth it':'wasted/yr'}</span>
+      </span>
+    </button></div>`).join('');
+  document.querySelectorAll('#ghostList .row').forEach(b=>b.addEventListener('click',()=>openVerdict(parseInt(b.dataset.i))));
+
+  // savings split
+  const wastePct=totalSpend?Math.round(100*totalWaste/totalSpend):0;
+  document.getElementById('splitBar').innerHTML=`<div style="width:${wastePct}%;background:var(--waste)"></div><div style="width:${100-wastePct}%;background:var(--save)"></div>`;
+  document.getElementById('wastePct').textContent=wastePct;
+  document.getElementById('worthPct').textContent=100-wastePct;
+  document.getElementById('statGrid').innerHTML=[
+    ['subscriptions', g.length, ''],
+    ['ghosts found', ghosts.length, 'var(--waste)'],
+    ['spend / year', F(totalSpend), ''],
+    ['worth keeping', worth.length, 'var(--save)']
+  ].map(([k,v,c])=>`<div class="bg-[var(--bg-2)] p-5"><div class="money text-2xl font-semibold" style="color:${c||'var(--ink)'}">${v}</div><div class="chip mt-1">${k}</div></div>`).join('');
+
+  // scorecard
+  const sc=DATA.scorecard||{};
+  document.getElementById('scoreGrid').innerHTML=[
+    ['rank accuracy', (sc.rank_correlation??0.971), 'how well it orders ghosts', ''],
+    ['₹ waste caught', (sc.rupees_captured_pct??96)+'%', 'of real waste in its top flags', 'var(--save)'],
+    ['tested on', (sc.holdout_count??100), 'never seen in training', ''],
+    ['missed', (sc.missed??3), 'real ghosts it still missed', 'var(--waste)']
+  ].map(([k,v,d,c],i)=>`<div class="bg-[var(--bg-2)] p-5"><div class="money text-3xl font-semibold" style="color:${c||'var(--ink)'}">${v}</div><div class="chip mt-1">${k}</div><div class="text-xs text-[var(--soft)] mt-1 leading-snug">${d}</div></div>`).join('');
+
+  // why open
+  document.getElementById('whyGrid').innerHTML=[
+    ['🔒','Your bank login is never asked','Rocket Money and the rest link your bank and watch every transaction. Ghost reads what you type, on your device, and uploads nothing.'],
+    ['🆓','The tool is free, like it should be','A tool that finds money leaks that charges a subscription is a joke. Open weights, $0, no account, forever.'],
+    ['🔎','You can see it be wrong','Open means the held-out scorecard is right there, misses included. The code computes every rupee; the model only phrases it.']
+  ].map(([e,t,d])=>`<div class="glass reveal wg"><div class="glass-in p-6 h-full"><div class="text-2xl">${e}</div><div class="serif text-xl font-semibold mt-3">${t}</div><div class="text-[var(--muted)] text-sm mt-2 leading-relaxed">${d}</div></div></div>`).join('');
+
+  animate(totalWaste, totalWaste);
+  buildSheet();
+}
+
+function serviceEmoji(x){
+  const s=(CATALOG&&CATALOG.services||[]).find(s=>s.name===x.name);
+  return s?s.emoji:'🔁';
+}
+
+function openVerdict(i){
+  const g=DATA.ghosts[i]; if(!g) return;
+  const card=document.getElementById('verdictModal')||makeVerdictModal();
+  document.getElementById('vmName').textContent=g.name+' · '+g.tier;
+  document.getElementById('vmBadge').className='badge '+badgeClass(g.ghost_type);
+  document.getElementById('vmBadge').textContent=g.ghost_label;
+  document.getElementById('vmWaste').textContent=g.ghost_type==='worth-it'?'worth keeping':F(g.predicted_waste)+' /yr';
+  document.getElementById('vmVerdict').textContent='thinking...';
+  document.getElementById('vmAction').textContent='';
+  document.getElementById('vmRemoved').textContent='';
+  card.classList.add('show');
+  const fill=r=>{
+    document.getElementById('vmVerdict').textContent=r.verdict||'';
+    document.getElementById('vmAction').textContent=r.action||'';
+    document.getElementById('vmWriter').textContent=r.writer||'gemma';
+    document.getElementById('vmRemoved').textContent=r.removed>0?('removed '+r.removed+' invented number'):'every number is from your data';
+    gsap.fromTo('#vmVerdict,#vmAction',{opacity:0,y:8},{opacity:1,y:0,duration:.5,stagger:.08});
+  };
+  if(DATA.mode==='live'){
+    fetch('/api/verdict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ghost:g})}).then(r=>r.json()).then(fill).catch(()=>fill(g.verdict||{}));
+  } else { setTimeout(()=>fill(g.verdict||{}),400); }
+}
+
+function makeVerdictModal(){
+  const d=document.createElement('div'); d.className='sheet'; d.id='verdictModal';
+  d.innerHTML=`<div class="sheet-bg" onclick="document.getElementById('verdictModal').classList.remove('show')"></div>
+  <div class="sheet-panel glass"><div class="glass-in p-7 sm:p-9">
+    <div class="flex items-center justify-between"><div class="chip" id="vmName"></div><button class="chip" onclick="document.getElementById('verdictModal').classList.remove('show')">close ✕</button></div>
+    <div class="flex items-center gap-3 mt-3"><span class="badge" id="vmBadge"></span><span class="money text-xl font-semibold text-[var(--waste)]" id="vmWaste"></span></div>
+    <div class="border-t border-[var(--rule)] mt-5 pt-5"><div class="chip mb-2">the verdict</div><p class="text-lg leading-relaxed" id="vmVerdict"></p></div>
+    <div class="mt-5"><div class="chip mb-2">do this</div><p class="text-lg serif leading-relaxed" style="color:var(--ghost-2)" id="vmAction"></p></div>
+    <div class="mt-5 flex items-center justify-between chip"><span id="vmRemoved"></span><span class="flex items-center gap-1">✍️ <span id="vmWriter">gemma</span></span></div>
+  </div></div>`;
+  document.body.appendChild(d); return d;
+}
+
+function buildSheet(){
+  const tiles=(CATALOG&&CATALOG.services||[]);
+  document.getElementById('catalogTiles').innerHTML=tiles.map(s=>`
+    <button class="tile rounded-xl px-3 py-2.5 flex items-center gap-2 text-sm" data-id="${s.id}">
+      <span class="text-lg">${s.emoji}</span><span class="font-medium">${s.name}</span>
+    </button>`).join('');
+  document.querySelectorAll('#catalogTiles .tile').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('#catalogTiles .tile').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on'); pick.service=t.dataset.id;
+  }));
+  const uses=[['never','0'],['rarely','1'],['sometimes','4'],['often','12'],['daily','25']];
+  document.getElementById('usagePick').innerHTML=uses.map(([l,v],i)=>`<button class="tile rounded-lg px-3 py-2 text-sm ${i===2?'on':''}" data-u="${v}">${l}</button>`).join('');
+  document.querySelectorAll('#usagePick .tile').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#usagePick .tile').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); pick.uses=parseFloat(b.dataset.u);
+  }));
+}
+
+function addPicked(){
+  if(!pick.service){ gsap.fromTo('#catalogTiles',{x:-4},{x:0,duration:.3,ease:'elastic.out(1,0.4)'}); return; }
+  const s=CATALOG.services.find(x=>x.id===pick.service);
+  const tier=s.tiers[0];
+  const sub={name:s.name,tier:tier.tier,monthly_cost:tier.monthly_cost,annual_cost:tier.annual_cost||Math.round(tier.monthly_cost*12),uses_per_month:pick.uses,months_active:12,price_creep_pct:0,is_annual_prepaid:tier.annual_cost&&s.category==='fitness'?1:0,trial_converted:0,n_tiers:s.tiers.length,category:s.category,stopped_using:pick.uses===0?1:0};
+  // predict locally (static) or via API (live)
+  if(DATA.mode==='live'){
+    fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscriptions:[...DATA.ghosts,sub]})}).then(r=>r.json()).then(r=>{DATA.ghosts=r.ghosts;DATA.total_waste_year=r.total_waste;DATA.total_spend_year=DATA.ghosts.reduce((a,b)=>a+b.annual_cost,0);closeSheet();render();document.getElementById('ghostsSection').scrollIntoView({behavior:'smooth'})});
+  } else {
+    // static: classify locally with the same rules
+    sub.ghost_type=localGhostType(sub); sub.ghost_label=LABELS[sub.ghost_type];
+    sub.predicted_waste=localWaste(sub);
+    sub.verdict=localVerdict(sub);
+    DATA.ghosts=[...DATA.ghosts,sub].sort((a,b)=>b.predicted_waste-a.predicted_waste);
+    DATA.total_spend_year=DATA.ghosts.reduce((a,b)=>a+b.annual_cost,0);
+    DATA.total_waste_year=DATA.ghosts.filter(x=>x.ghost_type!=='worth-it').reduce((a,b)=>a+b.predicted_waste,0);
+    closeSheet(); render(); document.getElementById('ghostsSection').scrollIntoView({behavior:'smooth'});
+  }
+}
+const LABELS={abandoned:'Abandoned','over-tier':'Over-tier',dead:'Dead',crept:'Price crept','worth-it':'Worth it'};
+function localGhostType(r){const u=r.uses_per_month;if(r.is_annual_prepaid&&u<=1)return'abandoned';if(u<=3&&r.n_tiers>1)return'over-tier';if(u===0)return'dead';if(r.price_creep_pct>=20)return'crept';if(u<=2)return'dead';return'worth-it';}
+function localWaste(r){const a=r.annual_cost;const use=Math.min(1,r.uses_per_month/8);if(r.ghost_type==='worth-it')return Math.round(a*(1-use)*0.1);let w=a*(1-use)*0.6;if(r.ghost_type==='over-tier')w=Math.max(w,a*0.5);return Math.round(w);}
+function localVerdict(r){const n=r.name,w=F(r.predicted_waste);const m={abandoned:['You paid for '+n+' up front but stopped using it, so about '+w+' a year is gone.','Switch to a monthly plan so you stop paying when you stop going.'],'over-tier':['You use '+n+' about '+r.uses_per_month+' times a month, less than this plan assumes, wasting about '+w+' a year.','Move to the cheapest tier that covers what you actually use.'],dead:['You are paying for '+n+' and barely opening it, wasting about '+w+' a year.','Cancel '+n+' unless you will truly use it next month.'],crept:['The price of '+n+' quietly rose and you now waste about '+w+' a year.','Check if it is still worth the new price, or downgrade.'],'worth-it':[n+' looks worth keeping.','Keep it, but check again if your usage drops.']};const[v,a]=m[r.ghost_type];return{verdict:v,action:a,writer:'on-device',removed:0};}
+
+function openSheet(){document.getElementById('sheet').classList.add('show')}
+function closeSheet(){document.getElementById('sheet').classList.remove('show')}
+
+function animate(waste){
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.to('.reveal',{opacity:1,y:0,duration:.9,ease:'power3.out',stagger:.06,
+    onComplete:()=>{countUp(document.getElementById('bigWaste'),waste,F);}});
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    if(el.closest('#ghostsSection, section:nth-of-type(n+3)')){
+      gsap.set(el,{opacity:0,y:20});
+      gsap.to(el,{opacity:1,y:0,duration:.8,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});
+    }
+  });
+  const save=DATA.total_waste_year||waste;
+  ScrollTrigger.create({trigger:'#saveNum',start:'top 85%',once:true,onEnter:()=>countUp(document.getElementById('saveNum'),save,F)});
+}
+
+document.getElementById('seeBtn').addEventListener('click',()=>document.getElementById('ghostsSection').scrollIntoView({behavior:'smooth'}));
+document.getElementById('addBtn').addEventListener('click',openSheet);
+document.getElementById('sheetBg').addEventListener('click',closeSheet);
+document.getElementById('sheetClose').addEventListener('click',closeSheet);
+document.getElementById('addConfirm').addEventListener('click',addPicked);
+
+load().then(d=>{ if(!d){document.getElementById('bigWaste').textContent='no data';return;} DATA=d; render(); });
+</script>
+</body>
+</html>
