@@ -1,7 +1,7 @@
 ---
 title: "I let an open model hunt the ghost costs in my subscriptions. It found Rs 29,056 a year."
 published: false
-tags: devchallenge, hf26challenge, ai, opensource
+tags: devchallenge, hf26challenge
 cover_image: https://raw.githubusercontent.com/simplynadaf/subscription-ghost/main/docs/cover.png
 ---
 
@@ -15,6 +15,8 @@ Here is the thing: I have never watched a single video on Prime Video. I use Pri
 
 That is not a forgotten subscription. It is sneakier: a plan too big for how I actually live. And once I saw it, I started seeing the pattern everywhere. The gym membership I paid a year up front for and stopped going to by February, like 80% of people do. The storage tier I pay for and barely fill. The music I pay for twice without noticing.
 
+The theme is Ghost in the Machine, and I read it literally: the ghosts are the charges that haunt your statement every month, small enough that your brain never flags them, quietly taking money while you are not looking.
+
 So I built **Subscription Ghost**: an open-weight model that reads a small list of your subscriptions and predicts which ones are ghosts, then tells you the single thing to do about each, with the exact rupees you get back. It runs entirely on your own machine, for free, and it never asks for your bank login.
 
 It names four kinds of ghost:
@@ -25,8 +27,6 @@ It names four kinds of ghost:
 - **Price crept** the price quietly rose and you never noticed
 
 On a sample person's nine subscriptions it found **Rs 29,056 a year** quietly leaking, and for every one of them it named the exact cheaper plan.
-
-{% embed https://github.com/simplynadaf/subscription-ghost %}
 
 ---
 
@@ -70,13 +70,9 @@ Two open models, one job each, both on CPU.
 
 **A deterministic fallback** covers both halves, so if the model weights or Ollama are not available the app still works and the response says which path ran. It never hard-fails.
 
-The front end is a single file, Tailwind and GSAP, with an Apple-grade dark finance aesthetic that works on phone, tablet, and desktop.
+The front end is a single file, Tailwind and GSAP, with a premium dark finance look that works on phone, tablet, and desktop.
 
----
-
-## What the Model Actually Gets Wrong
-
-This is a prediction, so it can be wrong, and hiding that would defeat the point. I fit TabPFN on 75% of the subscriptions and score it on the 25% it has never seen:
+And because it is a prediction, I score it honestly. I fit TabPFN on 75% of the subscriptions and test it on the 25% it has never seen:
 
 ```
 scorecard (held-out, synthetic subscriptions)
@@ -98,13 +94,13 @@ That `missed: 3` is the number that matters. Subscription Ghost is a triage aid 
 
 Subscription Ghost runs TabPFN and Gemma on your own machine, on open weights, for Rs 0. It reads only what you tell it and uploads nothing. No bank login, no account, no bill. A closed API could not make that promise, because the whole business model of the closed tools is the data and the subscription.
 
-Open also means two things a closed box cannot give you. The held-out scorecard is right there, misses included, so you can see exactly how much to trust it. And because I could read the model's output next to the real numbers, I could build the rule that strips any figure it invents, and write tests for it. You cannot audit a closed model like that.
+Open also means two things a closed box cannot give you. The held-out scorecard above is right there, misses included, so you can see exactly how much to trust it. And because I could read the model's output next to the real numbers, I could build the rule that strips any figure it invents, and write tests for it. You cannot audit a closed model like that.
 
 ---
 
 ## The Spirit of It
 
-The theme is Ghost in the Machine, and the ghosts here are real: the charges that haunt your statement every month, small enough that your brain never flags them, quietly taking money while you are not looking. The one that got me was my own Prime bill. I genuinely did not know I was about to pay Rs 1,499 for video I have never watched, when Rs 399 covers what I use. Building this made me go check, and I will be switching to the shopping tier. That is the whole point: the money was leaving without me noticing, and an open model running on my own laptop is what made me notice.
+The one that got me was my own Prime bill. I genuinely did not know I was about to pay Rs 1,499 for video I have never watched, when Rs 399 covers what I use. Building this made me go check, and I will be switching to the shopping tier. That is the whole point: the money was leaving without me noticing, and an open model running on my own laptop is what made me notice.
 
 ---
 
@@ -112,7 +108,6 @@ The theme is Ghost in the Machine, and the ghosts here are real: the charges tha
 
 - **Best Use of TabPFN** the prediction is the product: TabPFN ranks every subscription by predicted annual waste and is scored on held-out data
 - **Best Use of Gemma** a local Gemma 3 writes the verdict and the exact action, with a no-invented-numbers rule enforced in code
-- **Best Use of a .tech Domain** (if I attach one at submission)
 
 ---
 
