@@ -9,3 +9,6 @@ venv/
 recording/voiceover/seg*.wav
 recording/voiceover/bed.wav
 recording/voiceover/voiceover.wav
+recording/raw/
+recording/frames/
+recording/subscription-ghost-demo.mp4
