@@ -45,15 +45,17 @@ If this found a ghost in your subscriptions, like, comment, and share, and follo
 open-source AI builds.
 
 Chapters:
-0:00 The money leaving your account
-0:06 My Amazon Prime ghost
-0:16 The fix (Rs 399 covers it)
-0:25 What Subscription Ghost does
-0:35 The open-source code
-0:45 Add your own (no bank login)
-0:57 Stop the leak
-1:06 Honest about being wrong
-1:15 Try it
+0:00 Intro
+0:03 The money leaving your account
+0:09 My Amazon Prime ghost
+0:19 The fix (Rs 399 covers it)
+0:28 Four kinds of ghost
+0:38 The open-source code
+0:48 Add your own (no bank login)
+1:00 Stop the leak
+1:09 Honest about being wrong
+1:18 Try it
+1:31 Links, like, comment, share
 
 Connect:
 Portfolio: https://sarvarnadaf.com
@@ -83,6 +85,10 @@ youtube-thumbnail.png (1280x720): "Find the money leaking out" + Rs 29,056/yr +
 
 ## Status
 - Thumbnail: ready (youtube-thumbnail.png)
+- Demo video: READY (subscription-ghost-demo.mp4, 97s, 1280x720, H.264+AAC).
+  Intro card + live website demo (hero, verdicts, add-a-sub, overlap, stop-the-leak,
+  scorecard) + GitHub repo scroll + outro card. Amazon Polly voiceover over a quiet
+  background music bed, continuous for the full length, loudness-normalized to -16 LUFS.
 - Voiceover soundtrack: ready (recording/voiceover/soundtrack.mp3)
 - Script + cards: ready (recording/SCRIPT.md, card-intro/outro)
-- Demo video: NOT yet recorded (silent screen capture pending), then mux soundtrack.
+- All assets on S3: s3://sarvars-youtube-videos/ghost-subscriber/
