@@ -9,15 +9,19 @@ cover_image: https://raw.githubusercontent.com/simplynadaf/subscription-ghost/ma
 
 ## What I Built
 
-When I upgraded to Airtel Black, it bundled Amazon Prime free for a year. I was happy. A year later the free window closed and I was quietly billed Rs 1,499 for a full Prime membership.
+In college I could never figure out why some things were so cheap. A printer for almost nothing. A console sold at a loss. A coffee machine priced like a gift. It took me years to understand the trick: the cheap thing was never the product. The ink, the games, the pods, the membership, that was the product. The company was not selling you a machine. It was signing you up for a bill that arrives forever, and the machine was just the hook.
 
-Except I have never watched a single video on Prime Video. I use Prime for one reason, shipping. And Amazon sells a Prime Shopping Edition for Rs 399 a year that gives me exactly that and drops the video I never touch. So I was about to pay Rs 1,499 for a plan where I use one third of it, when Rs 399 covers my real life. That is Rs 1,100 a year leaking out of my account for a feature I do not use.
+Once I saw it, I could not unsee it. The modern version is the subscription. The app is free to download, the first month is free, the hardware is subsidised, because the real business is the small charge that repeats every month after you have forgotten you agreed to it. The whole model is built so you stop noticing. That is not a bug in the pricing. That is the pricing.
+
+And it got me too. When I upgraded to Airtel Black, it bundled Amazon Prime free for a year. I was happy. A year later the free window closed and I was quietly billed Rs 1,499 for a full Prime membership.
+
+Except I have never watched a single video on Prime Video. I use Prime for one reason, shipping. And Amazon sells a Prime Shopping Edition for Rs 399 a year that gives me exactly that and drops the video I never touch. So I was about to pay Rs 1,499 for a plan where I use one third of it, when Rs 399 covers my real life. That is Rs 1,100 a year leaking out of my account for a feature I do not use. The free year was the cheap printer. The Rs 1,499 renewal was the ink.
 
 That is not a forgotten subscription. It is sneakier: a plan too big for how I actually live. And once I saw it, I started seeing the pattern everywhere. The gym membership I paid a year up front for and stopped going to by February, like 80% of people do. The storage tier I pay for and barely fill. The music I pay for twice without noticing.
 
-The theme is Ghost in the Machine, and I read it literally: the ghosts are the charges that haunt your statement every month, small enough that your brain never flags them, quietly taking money while you are not looking.
+The theme is Ghost in the Machine, and I read it literally: the ghosts are the charges that haunt your statement every month, small enough that your brain never flags them, quietly taking money while you are not looking. The business model depends on you not looking. So I built something whose only job is to look.
 
-So I built **Subscription Ghost**: an open-weight model that reads a small list of your subscriptions and predicts which ones are ghosts, then tells you the single thing to do about each, with the exact rupees you get back. It runs entirely on your own machine, for free, and it never asks for your bank login.
+**Subscription Ghost** is an open-weight model that reads a small list of your subscriptions and predicts which ones are ghosts, then tells you the single thing to do about each, with the exact rupees you get back. It runs entirely on your own machine, for free, and it never asks for your bank login.
 
 It names four kinds of ghost:
 
@@ -110,7 +114,9 @@ Open also means two things a closed box cannot give you. The held-out scorecard 
 
 ## The Spirit of It
 
-The one that got me was my own Prime bill. I genuinely did not know I was about to pay Rs 1,499 for video I have never watched, when Rs 399 covers what I use. Building this made me go check, and I will be switching to the shopping tier. That is the whole point: the money was leaving without me noticing, and an open model running on my own laptop is what made me notice.
+The one that got me was my own Prime bill. I genuinely did not know I was about to pay Rs 1,499 for video I have never watched, when Rs 399 covers what I use. Building this made me go check, and I will be switching to the shopping tier.
+
+That is the whole point, and it closes the loop on the cheap printer from college. The entire subscription economy is built around you not noticing. The free trial, the auto-renew, the tier you outgrew, the thing you pay for twice, all of it leans on the same bet: that a small charge repeated forever is a charge you stop seeing. Subscription Ghost is the opposite bet. It is a small open model whose only job is to notice, running on your own laptop, owned by nobody, charging you nothing. The ghost in the machine was the quiet charge. This is the machine that catches it.
 
 ---
 
