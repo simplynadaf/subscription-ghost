@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/cover.png" alt="Subscription Ghost: an open model finds the money quietly leaving your account" width="820" />
+
 # 👻 Subscription Ghost finds the money quietly leaving your account
 
 ### An open-weight model reads your subscriptions and predicts which ones are ghosts: the plan too big for how you use it, the price that quietly crept up, the gym you stopped going to in February. Then it tells you the one thing to do about each. It runs on your own laptop, for free, and never asks for your bank login.
