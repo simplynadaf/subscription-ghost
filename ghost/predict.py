@@ -158,6 +158,8 @@ def rank(rows, train_rows=None):
     model and precise about the action. No double counting: one dominant reason each.
     """
     from ghost.analyze import dominant_ghost
+    if not rows:
+        return [], "tabpfn"
     if train_rows is None:
         train_rows = load_rows()
     tx, ty = to_xy(train_rows)
