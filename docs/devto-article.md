@@ -1,5 +1,5 @@
 ---
-title: "I let an open model hunt the ghost costs in my subscriptions. It found Rs 29,056 a year."
+title: "I was about to pay Rs 1,499 for Prime Video I never watch. An open model on my laptop caught it."
 published: false
 tags: devchallenge, hf26challenge
 cover_image: https://raw.githubusercontent.com/simplynadaf/subscription-ghost/main/docs/cover.png
