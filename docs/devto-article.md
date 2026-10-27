@@ -11,7 +11,7 @@ cover_image: https://raw.githubusercontent.com/simplynadaf/subscription-ghost/ma
 
 When I upgraded to Airtel Black, it bundled Amazon Prime free for a year. I was happy. A year later the free window closed and I was quietly billed Rs 1,499 for a full Prime membership.
 
-Here is the thing: I have never watched a single video on Prime Video. I use Prime for one reason, shipping. And Amazon sells a Prime Shopping Edition for Rs 399 a year that gives me exactly that and drops the video I never touch. So I was about to pay Rs 1,499 for a plan where I use one third of it, when Rs 399 covers my real life. That is Rs 1,100 a year leaking out of my account for a feature I do not use.
+Except I have never watched a single video on Prime Video. I use Prime for one reason, shipping. And Amazon sells a Prime Shopping Edition for Rs 399 a year that gives me exactly that and drops the video I never touch. So I was about to pay Rs 1,499 for a plan where I use one third of it, when Rs 399 covers my real life. That is Rs 1,100 a year leaking out of my account for a feature I do not use.
 
 That is not a forgotten subscription. It is sneakier: a plan too big for how I actually live. And once I saw it, I started seeing the pattern everywhere. The gym membership I paid a year up front for and stopped going to by February, like 80% of people do. The storage tier I pay for and barely fill. The music I pay for twice without noticing.
 
