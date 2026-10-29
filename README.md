@@ -14,6 +14,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-7c6cff)](LICENSE)
 
 [![Live demo](https://img.shields.io/badge/🖥%20Try%20the%20live%20demo-7c6cff)](https://simplynadaf.github.io/subscription-ghost/)
+[![Watch the demo](https://img.shields.io/badge/▶%20Watch%20the%20demo-FF0000?logo=youtube&logoColor=white)](https://youtu.be/ToPf8jWAafA)
 
 **👻 Built for the [Hacktoberfest Open-Source AI Challenge Week 4: Ghost in the Machine](https://dev.to/challenges/hacktoberfest-week4-2026-10-26)**
 
@@ -380,10 +381,10 @@ No. It is a static replay of a real run, baked to GitHub Pages, making zero call
 
 - 👻 Challenge: https://dev.to/challenges/hacktoberfest-week4-2026-10-26
 - 🖥️ Live demo (static replay): https://simplynadaf.github.io/subscription-ghost/
-- ▶️ Demo video: coming soon
+- ▶️ Demo video: https://youtu.be/ToPf8jWAafA
 
 <div align="center">
-<img src="docs/youtube-thumbnail.png" alt="Subscription Ghost: find the money leaking out, Rs 29,056 a year, an open model found it, runs on your laptop for free" width="640" />
+<a href="https://youtu.be/ToPf8jWAafA"><img src="docs/youtube-thumbnail.png" alt="Subscription Ghost: find the money leaking out, Rs 29,056 a year, an open model found it, runs on your laptop for free" width="640" /></a>
 </div>
 
 ---
